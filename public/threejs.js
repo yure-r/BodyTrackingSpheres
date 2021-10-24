@@ -1232,7 +1232,7 @@ camera.lookAt( camera_pivot.position );
 //     });
 //       scene.add(body)
 //     // body.position.y = bodyHeight / 2;
-const map = new THREE.TextureLoader().load( './blackcircle.png' );
+const map = new THREE.TextureLoader().load( 'https://cdn.glitch.me/3972d6f4-892b-4df1-adda-0da6e2ddf320%2Fblackcircle.png' );
 const material = new THREE.SpriteMaterial( { map: map, color: 0xffffff } );
 // const sprite = new THREE.Sprite( material );
     
