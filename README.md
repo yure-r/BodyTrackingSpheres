@@ -3,7 +3,7 @@ Most of this project, as it stands, was exported from Glitch.
 All of the files that are necessary for this project are in the main branch! The easiest and fastest ways to get this project up and running for yourself, would be to import this repo into a glitch project. 
 
 To do so you would:
-1. Visit https://gltich.com and create an account.
+1. Visit https://glitch.com and create an account.
 2. Click on "new project" and at the bottom of that dropdown, click "import from GitHub" 
 3. Change the url to https://github.com/yure-r/BodyTrackingSpheres
 4. Glitch will automatically clone the "main" branch into the project. 
