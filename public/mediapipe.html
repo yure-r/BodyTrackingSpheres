@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+<!--    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils_3d@0.2/landmark_grid.css" crossorigin="anonymous"> -->
+  <meta charset="utf-8">
+  <link rel="icon" href="favicon.ico">
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils@0.5/control_utils.css" crossorigin="anonymous">
+
+  <link rel="stylesheet" type="text/css" href="demo.css" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils_3d@0.2/control_utils_3d.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils@0.5/control_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils@0.3/drawing_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.4/pose.js" crossorigin="anonymous"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/typescript/4.3.5/typescript.min.js" integrity="sha512-nf9AaqSCBbNzNqik9bkHt3+LCL50vkUxPw6GBLZ513kaAZcak9HXqRgi/EB7+NOTjFShFefWvzwzlE89jZxt9g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+  
+</head>
+
+  <style>
+  @keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.abs {
+  position: absolute;
+}
+
+a {
+  color: white;
+  text-decoration: none;
+}
+a:hover {
+  color: lightblue;
+}
+
+body {
+  bottom: 0;
+  font-family: "Titillium Web", sans-serif;
+  color: white;
+  left: 0;
+  margin: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transform-origin: 0px 0px;
+  overflow: hidden;
+}
+
+.container {
+  position: absolute;
+  background-color: #596e73;
+  width: 100%;
+  max-height: 100%;
+}
+
+.input_video {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.input_video.selfie {
+  transform: scale(-1, 1);
+}
+
+.input_image {
+  position: absolute;
+}
+
+.canvas-container {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.output_canvas {
+  width: 100%;
+  display: block;
+  position: relative;
+  left: 0;
+  top: 0;
+}
+
+.logo {
+  bottom: 10px;
+  right: 20px;
+}
+.logo .title {
+  color: white;
+  font-size: 28px;
+}
+.logo .subtitle {
+  position: relative;
+  color: white;
+  font-size: 10px;
+  left: -30px;
+  top: 20px;
+}
+
+.control-panel {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    display: flex;
+    width: 100vw;
+}
+
+.loading {
+  display: flex;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  align-items: center;
+  backface-visibility: hidden;
+  justify-content: center;
+  opacity: 1;
+  transition: opacity 1s;
+}
+.loading .message {
+  font-size: x-large;
+}
+.loading .spinner {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  animation: spin 1s linear infinite;
+  border: 32px solid #bebebe;
+  border-top: 32px solid #3498db;
+  border-radius: 50%;
+}
+
+.loaded .loading {
+  opacity: 0;
+}
+
+.shoutout {
+  left: 0;
+  right: 0;
+  bottom: 40px;
+  text-align: center;
+  font-size: 24px;
+  position: absolute;
+}
+  </style>
+  
+  
+<body>
+  <style>
+    .square-box {
+      width: 33%;
+      height: 0;
+      padding-top: 33%;
+      position: absolute;
+      right: 20px;
+      top: 20px;
+    }
+
+    .landmark-grid-container {
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      top:0;
+      left:0;
+      background-color: #99999999;
+    }
+    
+    .positionData{
+position: absolute;
+    bottom: 0vh;
+    left: -87vw;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+        font-size: 2.3vh;
+}
+    
+    .flexspan{
+      display: flex;
+    }
+    }
+    
+    .positionData span{
+      display: flex;
+      margin-right: 5px;
+    }
+  </style>
+  <div class="container">
+    <video class="input_video"></video>
+    <canvas class="output_canvas" width="1280px" height="720px"></canvas>
+    <div class="loading">
+      <div class="spinner"></div>
+      <div class="message">
+        Loading
+      </div>
+    </div>
+    <a class="abs logo" href="http://www.mediapipe.dev" target="_blank">
+      <div style="display: flex;align-items: center;bottom: 0;right: 10px;">
+        <img class="logo" src="logo_white.png" alt="" style="
+          height: 50px;">
+        <span class="title">MediaPipe</span>
+        <div class="positionData">
+          <span class="flexspan" id="0">0: <span class="datacontainer"> </span></span>
+          <span class="flexspan" id="1">1: <span class="datacontainer"> </span></span>
+          <span class="flexspan" id="2">2: <span class="datacontainer"> </span></span>
+          <span class="flexspan" id="3">3: <span class="datacontainer"> </span></span>
+          <span class="flexspan" id="4">4: <span class="datacontainer"> </span></span>
+          <span class="flexspan" id="5">5: <span class="datacontainer"> </span></span>
+          <span class="flexspan" id="6">6: <span class="datacontainer"> </span></span>
+          <span class="flexspan" id="7">7: <span class="datacontainer"> </span></span>
+          <span class="flexspan" id="8">8: <span class="datacontainer"> </span></span>
+          <span class="flexspan" id="9">9: <span class="datacontainer"> </span></span>
+          <span class="flexspan" id="10">10: <span class="datacontainer"> </span></span>
+          <span class="flexspan" id="11">11: <span class="datacontainer"> </span></span>
+          <span class="flexspan" id="12">12: <span class="datacontainer"> </span></span>
+          <span class="flexspan" id="13">13: <span class="datacontainer"> </span></span>
+          <span class="flexspan" id="14">14: <span class="datacontainer"> </span></span>
+          <span class="flexspan" id="15">15: <span class="datacontainer"> </span></span>
+          <span class="flexspan" id="16">16: <span class="datacontainer"> </span></span>
+          <span class="flexspan" id="17">17: <span class="datacontainer"> </span></span>
+          <span class="flexspan" id="18">18: <span class="datacontainer"> </span></span>
+          <span class="flexspan" id="19">19: <span class="datacontainer"> </span></span>
+          <span class="flexspan" id="20">20: <span class="datacontainer"> </span></span>
+          <span class="flexspan" id="21">21: <span class="datacontainer"> </span></span>
+          <span class="flexspan" id="22">22: <span class="datacontainer"> </span></span>
+          <span class="flexspan" id="23">23: <span class="datacontainer"> </span></span>
+          <span class="flexspan" id="24">24: <span class="datacontainer"> </span></span>
+          <span class="flexspan" id="25">25: <span class="datacontainer"> </span></span>
+          <span class="flexspan" id="26">26: <span class="datacontainer"> </span></span>
+          <span class="flexspan" id="27">27: <span class="datacontainer"> </span></span>
+          <span class="flexspan" id="28">28: <span class="datacontainer"> </span></span>
+          <span class="flexspan" id="29">29: <span class="datacontainer"> </span></span>
+          <span class="flexspan" id="30">30: <span class="datacontainer"> </span></span>
+          <span class="flexspan" id="31">31: <span class="datacontainer"> </span></span>
+          <span class="flexspan" id="32">32: <span class="datacontainer"> </span></span>
+        </div>
+      </div>
+    </a>
+    <div class="shoutout">
+      <div>
+        <a href="https://solutions.mediapipe.dev/pose">
+          Click here for more info
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="control-panel">
+  </div>
+  <div class='square-box'>
+    <div class="landmark-grid-container">
+    </div>
+  </div>
+  </body>
+  
+  <script>
+  "use strict";
+const controls = window;
+const LandmarkGrid = window.LandmarkGrid;
+const drawingUtils = window;
+const mpPose = window;
+const poseOptions = {
+    locateFile: (file) => {
+        return `https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.4/${file}`;
+    }
+};
+// Our input frames will come from here.
+const videoElement = document.getElementsByClassName('input_video')[0];
+const canvasElement = document.getElementsByClassName('output_canvas')[0];
+const controlsElement = document.getElementsByClassName('control-panel')[0];
+const canvasCtx = canvasElement.getContext('2d');
+// We'll add this to our control panel later, but we'll save it here so we can
+// call tick() each time the graph runs.
+const fpsControl = new controls.FPS();
+// Optimization: Turn off animated spinner after its hiding animation is done.
+const spinner = document.querySelector('.loading');
+spinner.ontransitionend = () => {
+    spinner.style.display = 'none';
+};
+const landmarkContainer = document.getElementsByClassName('landmark-grid-container')[0];
+const grid = new LandmarkGrid(landmarkContainer, {
+    connectionColor: 0xCCCCCC,
+    definedColors: [{ name: 'LEFT', value: 0xffa500 }, { name: 'RIGHT', value: 0x00ffff }],
+    range: 2,
+    fitToGrid: true,
+    labelSuffix: 'm',
+    landmarkSize: 2,
+    numCellsPerAxis: 4,
+    showHidden: false,
+    centered: true,
+});
+function onResults(results) {
+  // console.log(results)
+  if (results.poseLandmarks){
+  document.getElementById("0").children[0].innerHTML = JSON.stringify(results.poseLandmarks[0])
+  document.getElementById("1").children[0].innerHTML = JSON.stringify(results.poseLandmarks[1])
+  document.getElementById("2").children[0].innerHTML = JSON.stringify(results.poseLandmarks[2])
+  document.getElementById("3").children[0].innerHTML = JSON.stringify(results.poseLandmarks[3])
+  document.getElementById("4").children[0].innerHTML = JSON.stringify(results.poseLandmarks[4])
+  document.getElementById("5").children[0].innerHTML = JSON.stringify(results.poseLandmarks[5])
+  document.getElementById("6").children[0].innerHTML = JSON.stringify(results.poseLandmarks[6])
+  document.getElementById("7").children[0].innerHTML = JSON.stringify(results.poseLandmarks[7])
+  document.getElementById("8").children[0].innerHTML = JSON.stringify(results.poseLandmarks[8])
+  document.getElementById("9").children[0].innerHTML = JSON.stringify(results.poseLandmarks[9])
+  document.getElementById("10").children[0].innerHTML = JSON.stringify(results.poseLandmarks[10])
+  document.getElementById("11").children[0].innerHTML = JSON.stringify(results.poseLandmarks[11])
+  document.getElementById("12").children[0].innerHTML = JSON.stringify(results.poseLandmarks[12])
+  document.getElementById("13").children[0].innerHTML = JSON.stringify(results.poseLandmarks[13])
+  document.getElementById("14").children[0].innerHTML = JSON.stringify(results.poseLandmarks[14])
+  document.getElementById("15").children[0].innerHTML = JSON.stringify(results.poseLandmarks[15])
+  document.getElementById("16").children[0].innerHTML = JSON.stringify(results.poseLandmarks[16])
+  document.getElementById("17").children[0].innerHTML = JSON.stringify(results.poseLandmarks[17])
+  document.getElementById("18").children[0].innerHTML = JSON.stringify(results.poseLandmarks[18])
+  document.getElementById("19").children[0].innerHTML = JSON.stringify(results.poseLandmarks[19])
+  document.getElementById("20").children[0].innerHTML = JSON.stringify(results.poseLandmarks[20])
+  document.getElementById("21").children[0].innerHTML = JSON.stringify(results.poseLandmarks[21])
+  document.getElementById("22").children[0].innerHTML = JSON.stringify(results.poseLandmarks[22])
+  document.getElementById("23").children[0].innerHTML = JSON.stringify(results.poseLandmarks[23])
+  document.getElementById("24").children[0].innerHTML = JSON.stringify(results.poseLandmarks[24])
+  document.getElementById("25").children[0].innerHTML = JSON.stringify(results.poseLandmarks[25])
+  document.getElementById("26").children[0].innerHTML = JSON.stringify(results.poseLandmarks[26])
+  document.getElementById("27").children[0].innerHTML = JSON.stringify(results.poseLandmarks[27])
+  document.getElementById("28").children[0].innerHTML = JSON.stringify(results.poseLandmarks[28])
+  document.getElementById("29").children[0].innerHTML = JSON.stringify(results.poseLandmarks[29])
+  document.getElementById("30").children[0].innerHTML = JSON.stringify(results.poseLandmarks[30])
+  document.getElementById("31").children[0].innerHTML = JSON.stringify(results.poseLandmarks[31])
+  document.getElementById("32").children[0].innerHTML = JSON.stringify(results.poseLandmarks[32])
+  }
+  
+    // Hide the spinner.
+    document.body.classList.add('loaded');
+    // Update the frame rate.
+    fpsControl.tick();
+    // Draw the overlays.
+    canvasCtx.save();
+    canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+    canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+    if (!results.poseWorldLandmarks) {
+        grid.updateLandmarks([]);
+        return;
+    }
+    drawingUtils.drawConnectors(canvasCtx, results.poseLandmarks, mpPose.POSE_CONNECTIONS, { visibilityMin: 0.65, color: 'white' });
+    drawingUtils.drawLandmarks(canvasCtx, Object.values(mpPose.POSE_LANDMARKS_LEFT)
+        .map(index => results.poseLandmarks[index]), { visibilityMin: 0.65, color: 'white', fillColor: 'rgb(255,138,0)' });
+    drawingUtils.drawLandmarks(canvasCtx, Object.values(mpPose.POSE_LANDMARKS_RIGHT)
+        .map(index => results.poseLandmarks[index]), { visibilityMin: 0.65, color: 'white', fillColor: 'rgb(0,217,231)' });
+    drawingUtils.drawLandmarks(canvasCtx, Object.values(mpPose.POSE_LANDMARKS_NEUTRAL)
+        .map(index => results.poseLandmarks[index]), { visibilityMin: 0.65, color: 'white', fillColor: 'white' });
+    canvasCtx.restore();
+    grid.updateLandmarks(results.poseWorldLandmarks, mpPose.POSE_CONNECTIONS, [
+        { list: Object.values(mpPose.POSE_LANDMARKS_LEFT), color: 'LEFT' },
+        { list: Object.values(mpPose.POSE_LANDMARKS_RIGHT), color: 'RIGHT' },
+    ]);
+}
+const pose = new mpPose.Pose(poseOptions);
+pose.onResults(onResults);
+// Present a control panel through which the user can manipulate the solution
+// options.
+new controls
+    .ControlPanel(controlsElement, {
+    selfieMode: true,
+    modelComplexity: 1,
+    smoothLandmarks: true,
+    minDetectionConfidence: 0.5,
+    minTrackingConfidence: 0.5
+})
+    .add([
+    new controls.StaticText({ title: 'MediaPipe Pose' }),
+    fpsControl,
+    new controls.Toggle({ title: 'Selfie Mode', field: 'selfieMode' }),
+    new controls.SourcePicker({
+        onSourceChanged: () => {
+            // Resets because this model gives better results when reset between
+            // source changes.
+            pose.reset();
+        },
+        onFrame: async (input, size) => {
+            const aspect = size.height / size.width;
+            let width, height;
+            if (window.innerWidth > window.innerHeight) {
+                height = window.innerHeight;
+                width = height / aspect;
+            }
+            else {
+                width = window.innerWidth;
+                height = width * aspect;
+            }
+            canvasElement.width = width;
+            canvasElement.height = height;
+            await pose.send({ image: input });
+        },
+    }),
+    new controls.Slider({
+        title: 'Model Complexity',
+        field: 'modelComplexity',
+        discrete: ['Lite', 'Full', 'Heavy'],
+    }),
+    new controls.Toggle({ title: 'Smooth Landmarks', field: 'smoothLandmarks' }),
+    new controls.Slider({
+        title: 'Min Detection Confidence',
+        field: 'minDetectionConfidence',
+        range: [0, 1],
+        step: 0.01
+    }),
+    new controls.Slider({
+        title: 'Min Tracking Confidence',
+        field: 'minTrackingConfidence',
+        range: [0, 1],
+        step: 0.01
+    }),
+])
+    .on(x => {
+    const options = x;
+    videoElement.classList.toggle('selfie', options.selfieMode);
+    pose.setOptions(options);
+});
+  
+  </script>
+</html>

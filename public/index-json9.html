@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html>
+  <body>
+
+<meta charset="utf-8">
+<head>
+  
+     <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="https://use.typekit.net/brg5ikl.css">
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+
+<!-- Load color scale -->
+<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+  <script src="allthree.js"></script>
+          <script src="/script4-json9.js" defer></script>
+  
+ </head>
+<!-- Create a div where the graph will take place -->
+<div id="my_dataviz"></div>
+    <div id="my_dataviz2"></div>
+    <canvas id="c" style="height:100vh; width:100vw;"></canvas>
+      <div id="tooltip" class="opacity0">
+        <div id="tooltip-hero">
+      
+    </div>
+    <div id="tooltip-title">
+      
+    </div>
+    <div id="tooltip-desc">
+      
+    </div>
+    </div>
+    
+    <div id="sliderxcontainer" class="slidercontainer" style="display:none;">
+  <input type="range" min="1" max="1350" value="590" class="slider" id="sliderx">
+<div id="sliderxamount">
+  
+      </div>
+    </div>
+    <input style="position: absolute; top:20px; right: 140px;" type="checkbox" id="myCheck">
+<!--     <div style="position: fixed; bottom: 20px; left: 20px; font-size: 12px;">
+      Data gathered from:<br><a href="https://www.forbes.com/top-colleges/">Forbes Top Colleges 2019</a>
+    </div> -->
+<!--         <div id="sliderycontainer" class="slidercontainer">
+  <input type="range" min="1" max="600" value="50" class="slider" id="slidery">
+<div id="slideryamount">
+  
+      </div>
+    </div>
+        <div id="sliderzcontainer" class="slidercontainer">
+  <input type="range" min="1" max="800" value="50" class="slider" id="sliderz">
+<div id="sliderzamount">
+  
+      </div>
+    </div> -->
+    
+    
+<!--  
+       cameratargetxslider
+       cameratargetyslider
+       cameratargetzslider
+-->
+    
+<p>
+  
+    </p>
+<!-- A bit of CSS: change stroke color of circle on hover (white -> black) -->
+<style>
+.bubbles {
+  stroke-width: 1px;
+  stroke: white;
+  filter: opacity(0.7);
+}
+.bubbles:hover {
+  stroke: red;
+  fill: gray!important;
+  filter: opacity(1);
+}
+</style>
+
+<script>
+
+// set the dimensions and margins of the graph
+var margin = {top: 10, right: 20, bottom: 30, left: 50},
+    width = (10 ) - margin.left - margin.right,
+    height = 10 - margin.top - margin.bottom;
+
+// append the svg object to the body of the page
+var svg = d3.select("#my_dataviz")
+  .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+var data =  [{"avgdebt":"\"$7,372\"","avgearlycareersalary":"\"$74,800\"","name":"\"Harvard University\"","netprice":"\"$14,327\"","rank":"\"1\"","state":"\"Massachusetts\"","type":"\"Private not-for-profit\""},{"avgdebt":"\"$7,372\"","avgearlycareersalary":"\"$74,800\"","name":"\"Harvard University\"","netprice":"\"$14,327\"","rank":"\"1\"","state":"\"Massachusetts\"","type":"\"Private not-for-profit\""},{"avgdebt":"\"$8,155\"","avgearlycareersalary":"\"$79,000\"","name":"\"Stanford University\"","netprice":"\"$13,261\"","rank":"\"2\"","state":"\"California\"","type":"\"Private not-for-profit\""}]
+ // console.log(data)
+  window.data = data;
+  console.log(window.data)
+  console.log("windowdata!")
+function makedatainpage (error, data, d3) {
+    
+    d3.select("body")
+        .selectAll("p")
+        .data(data)
+        .enter()
+        .append("p")
+        .text(function(d) {
+      d.rank = d.rank.replace(/^"|"$/g, '');
+      d.name = d.name.replace(/^"|"$/g, '');
+      d.state = d.state.replace(/^"|"$/g, '');
+      d.avgdebt = d.avgdebt.replace(/^"|"$/g, '');
+      d.netprice = d.netprice.replace(/^"|"$/g, '');
+      d.avgearlycareersalary = d.avgearlycareersalary.replace(/^"|"$/g, '');
+      d.type = d.type.replace(/^"|"$/g, '');
+            return d.rank + ", " + d.name + ", " + d.state + ", " + d.avgdebt + ", " + d.netprice + ", " + d.avgearlycareersalary + ", " + d.type
+        });
+
+var x = d3.scaleLinear()
+    .domain([0, 16])
+    .range([ 0, width ]);
+  svg.append("g")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x));
+
+// x.domain(data.map(function(d) { return d.rank; }))
+console.log("d3")
+
+
+
+
+ // var x = d3.scaleLinear()
+ //    .domain([0, 50000])
+ //    .range([ 0, width ]);
+ //  svg.append("g")
+ //    .attr("transform", "translate(0," + height + ")")
+ //    .call(d3.axisBottom(x));
+
+//Read the data
+  
+  
+  
+  
+  
+
+
+// code omitted.
+
+
+
+  // Add X axis
+ 
+  // Add Y axis
+  var y = d3.scaleLinear()
+    .domain([-650, 1])
+    .range([ height, 0]);
+  svg.append("g")
+    .call(d3.axisLeft(y));
+// y.domain(data.map(function(d) { return d.avgdebt; }))
+  
+  
+  // Add a scale for bubble size
+  var z = d3.scaleLinear()
+    .domain([1, 40])
+    .range([ 1, 4]);
+
+
+  // -1- Create a tooltip div that is hidden by default:
+  var tooltip = d3.select("#my_dataviz2")
+    .append("div")
+      .style("opacity", 0)
+      .attr("class", "tooltip")
+      .style("background-color", "black")
+      .style("border-radius", "5px")
+      .style("padding", "10px")
+      .style("color", "white")
+      .style("position", "absolute")
+      .style("pointer-events", "none")
+  
+
+  // -2- Create 3 functions to show / update (when mouse move but stay on same circle) / hide the tooltip
+  var showTooltip = function(d) {
+    d.name = d.name.replace(/^"|"$/g, '');
+    
+    // tooltip
+      // .transition()
+      // .duration(200)
+    tooltip
+      .style("opacity", 1)
+      .html("#"+ d.rank + ": " + d.name + "<br>" + d.state + "<br>" + "Avg. Debt: " + d.avgdebt + "<br>" + "Net Price: " + d.netprice + "<br>" + "Avg. Salary After Grad: " + d.avgearlycareersalary + "<br>" + d.type)
+      .style("left", (d3.mouse(this)[0]+30) + "px")
+      .style("top", (d3.mouse(this)[1]+30) + "px")
+  }
+  
+  var moveTooltip = function(d) {
+    tooltip
+      .style("left", (d3.mouse(this)[0]+30) + "px")
+      .style("top", (d3.mouse(this)[1]+30) + "px")
+  }
+  var hideTooltip = function(d) {
+    tooltip
+      // .transition()
+      // .duration(200)
+      .style("opacity", 0)
+  }
+  
+
+
+  // Add dots
+  svg.append('g')
+    .selectAll("dot")
+    .data(data)
+    .enter()
+    .append("circle")
+      .attr("class", "bubbles")
+      .attr("cx", function (d) { 
+      d.avgdebt = d.avgdebt.replace(/^"|"$/g, '').replace(/,/g, "").replace(/\$/g,'');
+      d.avgdebt = parseInt(d.avgdebt);
+    
+    
+      d.rank = d.rank.replace(/^"|"$/g, '');
+      d.name = d.name.replace(/^"|"$/g, '');
+      d.state = d.state.replace(/^"|"$/g, '');
+      // d.avgdebt = d.avgdebt.replace(/^"|"$/g, '');
+
+    
+      d.netprice = d.netprice.replace(/^"|"$/g, '');
+      d.avgearlycareersalary = d.avgearlycareersalary.replace(/^"|"$/g, '');
+      d.type = d.type.replace(/^"|"$/g, '');
+    // console.log(d.avgdebt)
+    return x(d.avgdebt); } )
+      .attr("cy", function (d) { 
+    
+      d.rank = d.rank.replace(/^"|"$/g, '');
+      d.name = d.name.replace(/^"|"$/g, '');
+      d.state = d.state.replace(/^"|"$/g, '');
+      // d.avgdebt = d.avgdebt.replace(/^"|"$/g, '');
+      // d.avgdebt = d.avgdebt.replace(/,/g, "");
+      // d.avgdebt = d.avgdebt.replace(/\$/g,'');
+    // console.log(d.avgdebt)
+      d.netprice = d.netprice.replace(/^"|"$/g, '');
+      d.avgearlycareersalary = d.avgearlycareersalary.replace(/^"|"$/g, '');
+      d.type = d.type.replace(/^"|"$/g, '');
+    return y(-d.rank); } )
+      .attr("r", function (d) { 
+    
+      d.rank = d.rank.replace(/^"|"$/g, '');
+      d.name = d.name.replace(/^"|"$/g, '');
+      d.state = d.state.replace(/^"|"$/g, '');
+
+
+      d.avgdebt = parseInt(d.avgdebt);
+    
+      d.netprice = d.netprice.replace(/^"|"$/g, '').replace(/,/g, "").replace(/\$/g,'');
+      d.netprice = parseInt(d.netprice);
+    
+      d.avgearlycareersalary = d.avgearlycareersalary.replace(/^"|"$/g, '');
+      d.type = d.type.replace(/^"|"$/g, '');
+    // console.log(d.netprice, "netprice")
+    return z(d.netprice/100); } )
+      .style("fill", function (d) { 
+    
+      d.rank = d.rank.replace(/^"|"$/g, '');
+      d.name = d.name.replace(/^"|"$/g, '');
+      d.state = d.state.replace(/^"|"$/g, '');
+      // d.avgdebt = d.avgdebt.replace(/^"|"$/g, '');
+      // d.netprice = d.netprice.replace(/^"|"$/g, '');
+      d.avgearlycareersalary = d.avgearlycareersalary.replace(/^"|"$/g, '');
+      d.type = d.type.replace(/^"|"$/g, '');
+    return "black"; } )
+    // -3- Trigger the functions
+    .on("mouseover", showTooltip )
+    .on("mousemove", moveTooltip )
+    .on("mouseleave", hideTooltip )
+
+ 
+
+// x.domain(data.map(function(d) { return d.rank; }))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+};
+  
+  makedatainpage(1, data, d3);
+  
+
+  function makedatainpage2 (error, data, d3) {
+    var margin = {top: 10, right: 20, bottom: 30, left: 50},
+    width = ( 10 ) - margin.left - margin.right,
+    height = 10 - margin.top - margin.bottom;
+
+// append the svg object to the body of the page
+var svg = d3.select("#my_dataviz2")
+  .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+    
+    d3.select("body")
+        .selectAll("p")
+        .data(data)
+        .enter()
+        .append("p")
+        .text(function(d) {
+      d.rank = d.rank.replace(/^"|"$/g, '');
+      d.name = d.name.replace(/^"|"$/g, '');
+      d.state = d.state.replace(/^"|"$/g, '');
+      d.avgdebt = d.avgdebt.replace(/^"|"$/g, '');
+      d.netprice = d.netprice.replace(/^"|"$/g, '');
+      d.avgearlycareersalary = d.avgearlycareersalary.replace(/^"|"$/g, '');
+      d.type = d.type.replace(/^"|"$/g, '');
+            return d.rank + ", " + d.name + ", " + d.state + ", " + d.avgdebt + ", " + d.netprice + ", " + d.avgearlycareersalary + ", " + d.type
+        });
+
+var x = d3.scaleLinear()
+    .domain([0, 10])
+    .range([ 0, width ]);
+  svg.append("g")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x));
+
+// x.domain(data.map(function(d) { return d.rank; }))
+console.log("d3")
+
+
+
+
+ // var x = d3.scaleLinear()
+ //    .domain([0, 50000])
+ //    .range([ 0, width ]);
+ //  svg.append("g")
+ //    .attr("transform", "translate(0," + height + ")")
+ //    .call(d3.axisBottom(x));
+
+//Read the data
+  
+  
+  
+  
+  
+
+
+// code omitted.
+
+
+
+  // Add X axis
+ 
+  // Add Y axis
+  var y = d3.scaleLinear()
+    .domain([-650, 1])
+    .range([ height, 0]);
+  svg.append("g")
+    .call(d3.axisLeft(y));
+// y.domain(data.map(function(d) { return d.avgdebt; }))
+  
+  
+  // Add a scale for bubble size
+  var z = d3.scaleLinear()
+    .domain([40, 50])
+    .range([ 5, 20]);
+
+
+  // -1- Create a tooltip div that is hidden by default:
+  var tooltip = d3.select("#my_dataviz2")
+    .append("div")
+      .style("opacity", 0)
+      .attr("class", "tooltip")
+      .style("background-color", "black")
+      .style("border-radius", "5px")
+      .style("padding", "10px")
+      .style("color", "white")
+      .style("position", "absolute")
+      .style("pointer-events", "none")
+  
+
+  // -2- Create 3 functions to show / update (when mouse move but stay on same circle) / hide the tooltip
+  var showTooltip = function(d) {
+    d.name = d.name.replace(/^"|"$/g, '');
+    
+    // tooltip
+      // .transition()
+      // .duration(200)
+    tooltip
+      .style("opacity", 1)
+      .html("#"+ d.rank + ": " + d.name + "<br>" + d.state + "<br>" + "Avg. Debt: " + d.avgdebt + "<br>" + "Net Price: " + d.netprice + "<br>" + "Avg. Salary After Grad: " + d.avgearlycareersalary + "<br>" + d.type)
+      .style("left", (d3.mouse(this)[0]+30) + "px")
+      .style("top", (d3.mouse(this)[1]+ document.getElementById("my_dataviz").offsetHeight + 30) + "px")
+  }
+  
+  var moveTooltip = function(d) {
+    console.log(document.getElementById("my_dataviz").offsetHeight + 30);
+    tooltip
+      .style("left", (d3.mouse(this)[0]+30) + "px")
+      .style("top", (d3.mouse(this)[1]+ document.getElementById("my_dataviz").offsetHeight +30) + "px")
+  }
+  var hideTooltip = function(d) {
+    tooltip
+      // .transition()
+      // .duration(200)
+      .style("opacity", 0)
+  }
+  
+
+
+  // Add dots
+  svg.append('g')
+    .selectAll("dot")
+    .data(data)
+    .enter()
+    .append("circle")
+      .attr("class", "bubbles")
+      .attr("cx", function (d) { 
+      // d.avgdebt = d.avgdebt.replace(/^"|"$/g, '').replace(/,/g, "").replace(/\$/g,'');
+      // d.avgdebt = parseInt(d.avgdebt);
+    
+    
+      // d.rank = d.rank.replace(/^"|"$/g, '');
+      // d.name = d.name.replace(/^"|"$/g, '');
+      // d.state = d.state.replace(/^"|"$/g, '');
+      // d.avgdebt = d.avgdebt.replace(/^"|"$/g, '');
+
+    
+      // d.netprice = d.netprice.replace(/^"|"$/g, '');
+      // d.avgearlycareersalary = d.avgearlycareersalary.replace(/^"|"$/g, '');
+      // d.type = d.type.replace(/^"|"$/g, '');
+    // console.log(d.avgdebt)
+    return x(d.avgdebt); } )
+      .attr("cy", function (d) { 
+    
+      // d.rank = d.rank.replace(/^"|"$/g, '');
+      // d.name = d.name.replace(/^"|"$/g, '');
+      // d.state = d.state.replace(/^"|"$/g, '');
+      // d.avgdebt = d.avgdebt.replace(/^"|"$/g, '');
+      // d.avgdebt = d.avgdebt.replace(/,/g, "");
+      // d.avgdebt = d.avgdebt.replace(/\$/g,'');
+    // console.log(d.avgdebt)
+      // d.netprice = d.netprice.replace(/^"|"$/g, '');
+      // d.avgearlycareersalary = d.avgearlycareersalary.replace(/^"|"$/g, '');
+      // d.type = d.type.replace(/^"|"$/g, '');
+    return y(-d.rank); } )
+      .attr("r", function (d) { 
+    
+      // d.rank = d.rank.replace(/^"|"$/g, '');
+      // d.name = d.name.replace(/^"|"$/g, '');
+      // d.state = d.state.replace(/^"|"$/g, '');
+
+
+      // d.avgdebt = parseInt(d.avgdebt);
+    
+      // d.netprice = d.netprice.replace(/^"|"$/g, '').replace(/,/g, "").replace(/\$/g,'');
+      // d.netprice = parseInt(d.netprice);
+    
+      d.avgearlycareersalary = parseInt(d.avgearlycareersalary.replace(/^"|"$/g, '').replace(/,/g, "").replace(/\$/g,''));
+      // d.type = d.type.replace(/^"|"$/g, '');
+    // console.log(d.avgearlycareersalary, "avgearlycareersalary")
+    return z(d.avgearlycareersalary/1000); } )
+      .style("fill", function (d) { 
+    
+      // d.rank = d.rank.replace(/^"|"$/g, '');
+      // d.name = d.name.replace(/^"|"$/g, '');
+      // d.state = d.state.replace(/^"|"$/g, '');
+      // d.avgdebt = d.avgdebt.replace(/^"|"$/g, '');
+      // d.netprice = d.netprice.replace(/^"|"$/g, '');
+      // d.avgearlycareersalary = d.avgearlycareersalary.replace(/^"|"$/g, '');
+      // d.type = d.type.replace(/^"|"$/g, '');
+    return "black"; } )
+    // -3- Trigger the functions
+    .on("mouseover", showTooltip )
+    .on("mousemove", moveTooltip )
+    .on("mouseleave", hideTooltip )
+
+ 
+
+// x.domain(data.map(function(d) { return d.rank; }))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+};
+  
+  makedatainpage2(1, data, d3);
+  
+  
+</script>
+    
+    <script>
+      // console.log(document.querySelector("tbody").children[0].innerHTML)
+      
+// var endowmentPrivate = document.getElementById("privateEndowments").innerHTML
+      
+      // console.log(endowmentPrivate)
+    </script>
+    
+    
+  </body>
+</html>

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="https://fancy-fate-bovid.glitch.me/socket.io/socket.io.js"></script>
+    
+    
+    <script type="module">
+      import {Player, Friend, Meeting} from './people.class.js'    
+      import {BadWords} from './BadWords.js'
+      const BadWords1 = new BadWords();
+      
+      function promptPromise(message, message2) {
+  var dialog  = document.getElementById('dialog');
+  var input   = document.getElementById("textinput");
+  var okButton = dialog.querySelector('button.ok');
+  var XButton = dialog.querySelector('button.close-dialog');
+  let radio = ""
+  
+  dialog.querySelector('.message').innerHTML = String(message);
+  dialog.querySelector('.message2').innerHTML = String(message2)
+  dialog.className = '';
+
+  return new Promise(function(resolve, reject) {
+    resolve({input: input.value, radio: "undefined"});
+    document.getElementById("textinput").placeholder = "Display Name";
+    document.getElementById("textinput").maxlength = "30"
+    
+
+    
+    document.getElementById("textinput").oninput = () => {
+      
+      
+      const description = document.getElementById("textinput").value
+      let isInclude = BadWords1.check(description)
+      
+      if (!isInclude){
+        // console.log("safe!")
+        if (document.getElementById("democursortext").classList.contains("error")){
+        document.getElementById("democursortext").classList.remove("error")
+        document.getElementById("demo-cursor").classList.remove("error")
+        document.getElementsByClassName('ok')[0].classList.remove("error")
+        }
+      document.getElementById("democursortext").innerHTML  = document.getElementById("textinput").value
+      
+        
+      } else {
+        document.getElementById("democursortext").innerHTML = "Nice try. Use another name."
+        document.getElementById("democursortext").classList.add("error")
+        document.getElementById("demo-cursor").classList.add("error")
+        document.getElementsByClassName('ok')[0].classList.add("error")
+      }
+      
+      if (document.getElementById("textinput").style.color!= "black"){
+        document.getElementById("textinput").style.color = "black"
+      } 
+    }
+    
+var rad = document.getElementsByClassName("radiobutton");
+var prev = null;
+var prevprev = null    
+    function set(value){
+      prevprev = value
+    }
+    
+for (var i = 0; i < rad.length; i++) {
+    rad[i].addEventListener('change', function() {
+        if (prev === null){
+          prev = document.getElementById("contactChoice1")
+        }
+        (prev) ? set(prev.value): null;
+        if (this !== prev) {
+            prev = this;
+        }
+        
+        console.log(this.value)
+        document.getElementById("demo-cursor").classList.remove(prevprev)
+        document.getElementById("democursortext").classList.remove(prevprev)
+        document.getElementById("demo-cursor").classList.add(prev.value)
+        document.getElementById("democursortext").classList.add(prev.value)
+    });
+}
+    
+    dialog.addEventListener('click', function handleButtonClicks(e) {
+      if (e.target.tagName !== 'BUTTON') { return; }
+      dialog.removeEventListener('click', handleButtonClicks);
+      dialog.className = 'hidden';
+      if (e.target === okButton) {
+var radios = document.getElementsByName('roleRadio');
+for (var i = 0, length = radios.length; i < length; i++) {
+  if (radios[i].checked) {
+   radio = radios[i].value
+   console.log(radio)
+    resolve({input: input.value, radio: radio});
+    break;
+  }
+}
+
+      } else if (e.target === XButton){
+        // resolve({input: input.value, radio: "undefined"});
+      } else {
+        resolve({input: input.value, radio: "undefined"});
+      }
+    });
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  var button = document.getElementById('action');
+  var output = document.getElementById('prompt');
+  var rolefield = document.getElementById('role')
+    promptPromise('!', '?').then(function(name) {
+      output.innerHTML = '' + name.input;
+      rolefield.innerHTML = "" + name.radio;
+      
+      const response = {name: name.input, role: name.radio}
+      
+     const socket = io.connect("https://fancy-fate-bovid.glitch.me"); 
+      console.log("https://fancy-fate-bovid.glitch.me")
+         socket.on('connected', async function (data) {
+                 setInterval(function(){ 
+    //checks each friend
+      const childrenArray = Array.from(document.getElementById("cursorscontainer").children)
+      childrenArray.forEach(child => socket.emit("isChild", child.id))
+    }, 30000);
+                    const Meeting1 = new Meeting(socket)  
+                    document.getElementById('connections').innerHTML = (data.connections) + " ";
+                     console.log(data.connections, "updated HTML connections")
+                    if ((data.connections)===1){
+                      document.getElementById("othervisitors").innerHTML = " other visitor online"
+                    } else {
+                        document.getElementById("othervisitors").innerHTML = " other visitors online"
+                    }
+                    // Create player and friends
+                      socket.on('init', async function (data) {
+                      console.log(data)
+                      console.log("init")
+                      socket.emit('nameChosen', {response: response, player: data.player})
+                      data.friends.forEach(friend1 => Meeting1.createFriend(friend1.id, data.player, Meeting1, friend1.name, friend1.role, friend1));
+                      self.player = new Player(data.player, socket, response.name, response.role);
+                      console.log(self.player)
+                      document.querySelector("body").onmousemove = (e) => {
+                          const x = e.clientX
+                          const y = e.clientY
+                          const location = player.update(x,y,socket)
+                      };
+
+                      // New friend
+                      socket.on('new friend', function (data) {
+                          Meeting1.createFriend(data.friend, data.player, Meeting1, data.name, data.role);
+                      });
+                        
+                       socket.on('name updated', function (data) {
+                         console.log("name updated", data)
+                         Meeting1.updateFriendName(data.data.id, data.data.player, Meeting1, data.data.name, data.data.role, data)
+                      });
+
+                      // Friend gon
+                      socket.on('bye friend', function (data) {
+                        document.getElementById('connections').innerHTML = (data.connections-1) +" ";
+                        console.log(data.connections-1, "updated HTML connections")
+                    if ((data.connections-1)===1){
+                      document.getElementById("othervisitors").innerHTML = " other visitor online"
+                    } else {
+                        document.getElementById("othervisitors").innerHTML = " other visitors online"
+                    }
+                          Meeting1.removeFriend(self,data.friend, Meeting1);
+                      });
+                        
+                        socket.on('notConnected', function (data) {
+                        // document.getElementById('connections').innerHTML = (data.connections-1) +" ";
+                        // console.log(data.connections-1, "updated HTML connections")
+                    // if ((data.connections-1)===1){
+                      // document.getElementById("othervisitors").innerHTML = " other visitor online"
+                    // } else {
+                        // document.getElementById("othervisitors").innerHTML = " other visitors online"
+                    // }
+                          Meeting1.removeFriend(self,data.friend, Meeting1);
+                          
+                        })
+
+                      // Friend move
+                      socket.on('move', function (data) {
+                          Meeting1.updateFriend(data);
+                    // document.getElementById('connections').innerHTML = (data.users-1) +" ";
+                    //     console.log(data.users-1, "updated HTML connections")
+                    // if ((data.users-1)===1){
+                    //   document.getElementById("othervisitors").innerHTML = " other visitor online"
+                    // } else {
+                    //     document.getElementById("othervisitors").innerHTML = " other visitors online"
+                    // }
+                      });
+                  
+                  
+           
+             });
+         
+         }) 
+    
+    
+    })
+    .catch(function() {
+      output.innerHTML = '¯\\_(ツ)_/¯';
+    });
+
+});
+      
+     
+        
+                                           
+
+    
+    </script>
+    
+    <link rel="stylesheet" type="text/css" href="./style-socket.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+
+  </title>
+  </head>
+  
+  <body>
+    <div id="cursorscontainer">
+      <div class="online-users">
+       <span id="connections">
+        </span> <span id="othervisitors"> other visitors online</span><br>
+          <p>Your name is "<span id="prompt"></span>"</p>
+  <p>Your role is "<span id="role"></span>"</p>
+    </div>
+
+<!--   <p>The current time is <span id="time-stamp"></span>.</p> -->
+      
+      
+  <div id="dialog" class="hidden">
+    <div id="dialogchild">
+    <button class="close-dialog">
+      X
+    </button>
+        <div class="message">foobar</div>
+        <div class="message2">foobar</div>
+
+    <input style="color:gainsboro;" maxlength="30" id="textinput" type="text">
+
+
+    
+    <div class="radioscontainer">
+      <input class="radiobutton" type="radio" id="contactChoice1"
+       name="roleRadio" value="current-student" checked>
+      <label for="contactChoice1">Current Student</label> <br>
+
+      <input class="radiobutton" type="radio" id="contactChoice2"
+       name="roleRadio" value="faculty-staff">
+      <label for="contactChoice2">Faculty & Staff</label><br>
+
+      <input class="radiobutton" type="radio" id="contactChoice3"
+       name="roleRadio" value="alumnus">
+      <label for="contactChoice3">Alumnus</label><br>
+      
+            <input class="radiobutton" type="radio" id="contactChoice4"
+       name="roleRadio" value="friend-cu">
+      <label for="contactChoice4">Friend</label>
+    </div>
+
+      <div class="yourcursorspan">Your cursor
+  </div>
+    
+<div class="cursordemo">
+
+ <div id="demo-cursor" class="current-student friend demo-cursor"><div id="democursortext" class="current-student name name-demo">Display Name</div></div>
+  
+    </div>
+
+    <div>
+      <button class="ok">Enter</button><br>
+      <button class="cancel">Skip</button>
+    </div>
+      </div>
+  </div>
+      
+      
+      
+    </div>
+  </body>
+</html>

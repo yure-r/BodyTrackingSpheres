@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+<!--   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils_3d@0.2/control_utils_3d.js" crossorigin="anonymous"></script> -->
+  <script type="text/javascript" src="https://fancy-fate-bovid.glitch.me/socket.io/socket.io.js"></script>
+
+    <script>
+
+    </script>
+    <script type="text/javascript" src="./socket.io/socket.io.js"></script>
+   
+    
+    
+    <script type="module">
+      import {Player, Friend, Meeting} from './People.class.js'    
+      import {BadWords} from './BadWords.js'
+      const BadWords1 = new BadWords();
+      
+      function promptPromise(message, message2) {
+  var dialog  = document.getElementById('dialog');
+  var input   = document.getElementById("textinput");
+  var okButton = dialog.querySelector('button.ok');
+  var XButton = dialog.querySelector('button.close-dialog');
+  let radio = ""
+  
+  dialog.querySelector('.message').innerHTML = String(message);
+  dialog.querySelector('.message2').innerHTML = String(message2)
+  dialog.className = '';
+
+  return new Promise(function(resolve, reject) {
+    resolve({input: input.value, radio: "undefined"});
+    document.getElementById("textinput").placeholder = "Display Name";
+    document.getElementById("textinput").maxlength = "30"
+    
+
+    
+    document.getElementById("textinput").oninput = () => {
+      
+      
+      const description = document.getElementById("textinput").value
+      let isInclude = BadWords1.check(description)
+      
+      if (!isInclude){
+        // console.log("safe!")
+        if (document.getElementById("democursortext").classList.contains("error")){
+        document.getElementById("democursortext").classList.remove("error")
+        document.getElementById("demo-cursor").classList.remove("error")
+        document.getElementsByClassName('ok')[0].classList.remove("error")
+        }
+      document.getElementById("democursortext").innerHTML  = document.getElementById("textinput").value
+      
+        
+      } else {
+        document.getElementById("democursortext").innerHTML = "Nice try. Use another name."
+        document.getElementById("democursortext").classList.add("error")
+        document.getElementById("demo-cursor").classList.add("error")
+        document.getElementsByClassName('ok')[0].classList.add("error")
+      }
+      
+      if (document.getElementById("textinput").style.color!= "black"){
+        document.getElementById("textinput").style.color = "black"
+      } 
+    }
+    
+var rad = document.getElementsByClassName("radiobutton");
+var prev = null;
+var prevprev = null    
+    function set(value){
+      prevprev = value
+    }
+    
+for (var i = 0; i < rad.length; i++) {
+    rad[i].addEventListener('change', function() {
+        if (prev === null){
+          prev = document.getElementById("contactChoice1")
+        }
+        (prev) ? set(prev.value): null;
+        if (this !== prev) {
+            prev = this;
+        }
+        
+        console.log(this.value)
+        document.getElementById("demo-cursor").classList.remove(prevprev)
+        document.getElementById("democursortext").classList.remove(prevprev)
+        document.getElementById("demo-cursor").classList.add(prev.value)
+        document.getElementById("democursortext").classList.add(prev.value)
+    });
+}
+    
+    dialog.addEventListener('click', function handleButtonClicks(e) {
+      if (e.target.tagName !== 'BUTTON') { return; }
+      dialog.removeEventListener('click', handleButtonClicks);
+      dialog.className = 'hidden';
+      if (e.target === okButton) {
+var radios = document.getElementsByName('roleRadio');
+for (var i = 0, length = radios.length; i < length; i++) {
+  if (radios[i].checked) {
+   radio = radios[i].value
+   console.log(radio)
+    resolve({input: input.value, radio: radio});
+    break;
+  }
+}
+
+      } else if (e.target === XButton){
+        // resolve({input: input.value, radio: "undefined"});
+      } else {
+        resolve({input: input.value, radio: "undefined"});
+      }
+    });
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  var button = document.getElementById('action');
+  var output = document.getElementById('prompt');
+  var rolefield = document.getElementById('role')
+    promptPromise('!', '?').then(function(name) {
+      output.innerHTML = '' + name.input;
+      rolefield.innerHTML = "" + name.radio;
+      
+      const response = {name: name.input, role: name.radio}
+      const mpPose = window;
+const poseOptions = {
+    locateFile: (file) => {
+        return `https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.4/${file}`;
+    }
+};
+      // const pose = new mpPose.Pose(poseOptions);
+      
+     const socket = io.connect("https://autonomylab-blazepose-bodytracking.glitch.me"); 
+// const controls1 = window;
+// const LandmarkGrid = window.LandmarkGrid;
+const drawingUtils = window;
+// const mpPose = window;
+// const poseOptions = {
+//     locateFile: (file) => {
+//         return `https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.4/${file}`;
+//     }
+// };
+// Our input frames will come from here.
+const videoElement = document.getElementsByClassName('input_video')[0];
+const canvasElement = document.getElementsByClassName('output_canvas')[0];
+const controlsElement = document.getElementsByClassName('control-panel')[0];
+const canvasCtx = canvasElement.getContext('2d');
+// We'll add this to our control panel later, but we'll save it here so we can
+// call tick() each time the graph runs.
+// const fpsControl = new controls1.FPS();
+// Optimization: Turn off animated spinner after its hiding animation is done.
+      console.log("https://autonomylab-blazepose-bodytracking.glitch.me")
+      
+      // const pose = new mpPose.Pose(poseOptions);
+// pose.onResults(onResults);
+// Present a control panel through which the user can manipulate the solution
+// options.
+// new controls1
+//     .ControlPanel(controlsElement, {
+//     selfieMode: true,
+//     modelComplexity: 1,
+//     smoothLandmarks: true,
+//     minDetectionConfidence: 0.5,
+//     minTrackingConfidence: 0.5
+// })
+    // .add([
+    // new controls1.StaticText({ title: 'MediaPipe Pose' }),
+    // fpsControl,
+    // new controls1.Toggle({ title: 'Selfie Mode', field: 'selfieMode' }),
+    // new controls1.SourcePicker({
+    //     onSourceChanged: () => {
+    //         // Resets because this model gives better results when reset between
+    //         // source changes.
+    //         pose.reset();
+    //     },
+    //     onFrame: async (input, size) => {
+    //         const aspect = size.height / size.width;
+    //         let width, height;
+    //         if (window.innerWidth > window.innerHeight) {
+    //             height = window.innerHeight;
+    //             width = height / aspect;
+    //         }
+    //         else {
+    //             width = window.innerWidth;
+    //             height = width * aspect;
+    //         }
+    //         canvasElement.width = width;
+    //         canvasElement.height = height;
+    //         await pose.send({ image: input });
+    //     },
+    // }),
+    // new controls1.Slider({
+    //     title: 'Model Complexity',
+    //     field: 'modelComplexity',
+    //     discrete: ['Lite', 'Full', 'Heavy'],
+    // }),
+    // new controls1.Toggle({ title: 'Smooth Landmarks', field: 'smoothLandmarks' }),
+    // new controls1.Slider({
+    //     title: 'Min Detection Confidence',
+    //     field: 'minDetectionConfidence',
+    //     range: [0, 1],
+    //     step: 0.01
+    // }),
+    // new controls1.Slider({
+    //     title: 'Min Tracking Confidence',
+    //     field: 'minTrackingConfidence',
+    //     range: [0, 1],
+    //     step: 0.01
+    // }),
+// ])
+//     .on(x => {
+//     const options = x;
+//     // videoElement.classList.toggle('selfie', options.selfieMode);
+//     // pose.setOptions(options);
+// });
+      
+      
+      
+      socket.on('sphereMove', function(data){
+        
+  // console.log(data.data)
+  if (data.data){
+    console.log(data)
+    if(document.getElementsByClassName("output_canvas")[0].height != data.data[33] || document.getElementsByClassName("output_canvas")[0].width != data.data[34]){
+      document.getElementsByClassName("output_canvas")[0].height = data.data[33]
+      document.getElementsByClassName("output_canvas")[0].width = data.data[34]
+    }
+    
+    
+    // canvasCtx.clear()
+    canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+        drawingUtils.drawConnectors(canvasCtx, data.data, mpPose.POSE_CONNECTIONS, { visibilityMin: 0.65, color: 'black' });
+    drawingUtils.drawLandmarks(canvasCtx, Object.values(mpPose.POSE_LANDMARKS_LEFT)
+        .map(index => data.data[index]), { visibilityMin: 0.65, color: 'black', fillColor: 'rgb(255,138,0)' });
+    drawingUtils.drawLandmarks(canvasCtx, Object.values(mpPose.POSE_LANDMARKS_RIGHT)
+        .map(index => data.data[index]), { visibilityMin: 0.65, color: 'black', fillColor: 'rgb(0,217,231)' });
+    drawingUtils.drawLandmarks(canvasCtx, Object.values(mpPose.POSE_LANDMARKS_NEUTRAL)
+        .map(index => data.data[index]), { visibilityMin: 0.65, color: 'black', fillColor: 'black' });
+    canvasCtx.restore();
+  updateSpheres(data.data)                                        
+  }
+      })
+    }
+                                 )})
+        
+    </script>
+    <style>
+      .output_canvas{
+width: auto;
+    height: 22vh;
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    -webkit-flex: 1;
+    margin: auto;
+    border: 1px solid #a5a1a1;
+    background-color: white;
+      }
+      
+      @media screen and (max-width: 600px){
+        .output_canvas{
+/*           left:50%; */
+          position:relative;
+          margin:auto;
+          top:unset;
+          left:unset;
+        }
+      }
+    </style>
+    <link rel="stylesheet" type="text/css" href="./style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+
+  </title>
+  </head>
+  
+  <body>
+    <div  class="container">
+      
+    
+    <div>
+     <canvas id="c" style="height: 100vh; width: 100vw"></canvas>
+     <canvas class="output_canvas"  width="1280px" height="720px"></canvas>
+      </div>
+      </div>
+      <div class="control-panel">
+  </div>
+      <div class='square-box'>
+    <div class="landmark-grid-container">
+    </div>
+  </div>
+     <script src="./allthree.js"></script>
+    <script src="./threejs.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils@0.5/control_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils@0.3/drawing_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.4/pose.js" crossorigin="anonymous"></script>
+         <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3/camera_utils.js" crossorigin="anonymous"></script>
+    <div id="cursorscontainer">
+      <div class="online-users">
+       <span id="connections">
+        </span> <span id="othervisitors"> other visitors online</span><br>
+          <p>Your name is "<span id="prompt"></span>"</p>
+  <p>Your role is "<span id="role"></span>"</p>
+    </div>
+
+<!--   <p>The current time is <span id="time-stamp"></span>.</p> -->
+      
+      
+  <div id="dialog" class="hidden">
+    <div id="dialogchild">
+    <button class="close-dialog">
+      X
+    </button>
+        <div class="message">foobar</div>
+        <div class="message2">foobar</div>
+
+    <input style="color:gainsboro;" maxlength="30" id="textinput" type="text">
+
+
+    
+    <div class="radioscontainer">
+      <input class="radiobutton" type="radio" id="contactChoice1"
+       name="roleRadio" value="current-student" checked>
+      <label for="contactChoice1">Current Student</label> <br>
+
+      <input class="radiobutton" type="radio" id="contactChoice2"
+       name="roleRadio" value="faculty-staff">
+      <label for="contactChoice2">Faculty & Staff</label><br>
+
+      <input class="radiobutton" type="radio" id="contactChoice3"
+       name="roleRadio" value="alumnus">
+      <label for="contactChoice3">Alumnus</label><br>
+      
+            <input class="radiobutton" type="radio" id="contactChoice4"
+       name="roleRadio" value="friend-cu">
+      <label for="contactChoice4">Friend</label>
+    </div>
+
+      <div class="yourcursorspan">Your cursor
+  </div>
+    
+<div class="cursordemo">
+
+ <div id="demo-cursor" class="current-student friend demo-cursor"><div id="democursortext" class="current-student name name-demo">Display Name</div></div>
+  
+    </div>
+
+    <div>
+      <button class="ok">Enter</button><br>
+      <button class="cancel">Skip</button>
+    </div>
+      </div>
+  </div>
+      
+      
+      
+    </div>
+  </body>
+</html>
