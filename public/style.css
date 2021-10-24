@@ -1,0 +1,72 @@
+/* CSS files add styling rules to your content */
+
+/* body {
+  font-family: helvetica, arial, sans-serif;
+  margin: 2em;
+}
+
+h1 {
+  font-style: italic;
+  color: #373fff;
+}
+
+ */
+#my_dataviz{
+  display:none;
+}
+
+#my_dataviz2{
+  display:none;
+}
+
+#tooltip{
+  position: absolute;
+  height: 20px;
+  width: fit-content;
+  height: fit-content;
+  background-color: white;
+  box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px;
+  bottom: 200px;
+  right: 200px;
+  padding:20px;
+  border-radius: 20px;
+/*   opacity: 0; */
+  transition: opacity 0.4s ease-in-out;
+  pointer-events:none;
+  font-family: roboto-mono, monospace;
+
+font-weight: 400;
+
+font-style: normal;
+}
+
+.schooltitle{
+  font-weight: bold;
+}
+
+.opacity1{
+  opacity: 1;
+  transition: opacity 0.4s ease-in-out;
+}
+
+.opacity0{
+  opacity: 0;
+  transition: opacity 0.4s ease-in-out;
+}
+
+
+.slidercontainer{
+  position: absolute;
+  right:0px;
+  
+}
+
+#sliderxcontainer{
+  top: 20px;
+}
+#sliderycontainer{
+  top:80px;
+}
+#sliderzcontainer{
+  top: 140px;
+}
