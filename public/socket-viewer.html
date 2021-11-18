@@ -24,46 +24,6 @@
   dialog.querySelector('.message').innerHTML = String(message);
   dialog.querySelector('.message2').innerHTML = String(message2)
   dialog.className = '';
-
-  return new Promise(function(resolve, reject) {
-    resolve({input: input.value, radio: "undefined"});
-    document.getElementById("textinput").placeholder = "Display Name";
-    document.getElementById("textinput").maxlength = "30"
-    
-
-    
-    document.getElementById("textinput").oninput = () => {
-      
-      
-      
-      if (!isInclude){
-        // console.log("safe!")
-        if (document.getElementById("democursortext").classList.contains("error")){
-        document.getElementById("democursortext").classList.remove("error")
-        document.getElementById("demo-cursor").classList.remove("error")
-        document.getElementsByClassName('ok')[0].classList.remove("error")
-        }
-      document.getElementById("democursortext").innerHTML  = document.getElementById("textinput").value
-      
-        
-      } else {
-        document.getElementById("democursortext").innerHTML = "Nice try. Use another name."
-        document.getElementById("democursortext").classList.add("error")
-        document.getElementById("demo-cursor").classList.add("error")
-        document.getElementsByClassName('ok')[0].classList.add("error")
-      }
-      
-      if (document.getElementById("textinput").style.color!= "black"){
-        document.getElementById("textinput").style.color = "black"
-      } 
-    }
-    
-var rad = document.getElementsByClassName("radiobutton");
-var prev = null;
-var prevprev = null    
-    function set(value){
-      prevprev = value
-    }
     
 for (var i = 0; i < rad.length; i++) {
     rad[i].addEventListener('change', function() {
