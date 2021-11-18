@@ -12,3 +12,7 @@ To view and experince your own instance of the body tracking spheres on desktop,
 
 The index-window.html file creates a web demo and body tracking socket instance of your pose data.
 The socket-viewer.html file allows you (or anyone) to view the socket data on any device with internet access. 
+
+
+https://user-images.githubusercontent.com/66575069/142478656-48bea60f-a80e-4e26-8384-46ac8258b0cd.mov
+
