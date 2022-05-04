@@ -1,0 +1,425 @@
+:root{
+   --scrollbar-width: calc(100vw - 100%);
+}
+
+#cursorscontainer{
+  height: 100%;
+    width: 100vw;
+    position: absolute;
+    left: 0;
+    top: 0;
+    overflow: hidden;
+}
+
+body {
+  padding: 0px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  height: 100vh;
+  width: 100vw;
+  margin: 0px;
+}
+a {
+  color: #00b7ff;
+}
+.friend {
+    background-color: gainsboro;
+    width: 1px;
+    height: 1px;
+/*   background: url("https://cdn.glitch.com/fc76c743-ed4f-40b8-8cf5-889b2f64b004%2Fcursor.png?v=1621812496190"); */
+  position: absolute;
+  z-index: 101;
+/*   clip-path: polygon(6% 22%, 50% 30%, 94% 22%, 66% 55%, 50% 95%, 34% 56%); */
+  pointer-events: none;
+    transition: left 0.1s ease-out, top 0.1s ease-out;
+}
+
+.friend::before{
+    content:"";
+  position:absolute;
+  z-index:-1;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  background-color: inherit;
+    width: 24px;
+  height: 24px;
+/*   background: url("https://cdn.glitch.com/fc76c743-ed4f-40b8-8cf5-889b2f64b004%2Fcursor.png?v=1621812496190"); */
+  position: absolute;
+  z-index: 101;
+  clip-path: polygon(6% 22%, 50% 30%, 94% 22%, 66% 55%, 50% 95%, 34% 56%);
+  pointer-events: none;
+}
+
+.friend .name {
+    display: inline;
+    position: relative;
+    left: 19px;
+    top: 12px;
+    pointer-events: none;
+    color: black;
+    text-shadow: none;
+    /* background: #000; */
+    border-radius: 20px;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    white-space: nowrap;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 4px;
+    padding-top: 4.6px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    
+}
+
+.cursordemo{
+  width: fit-content;
+  height: fit-content;
+  margin:auto;
+}
+
+.demo-cursor{
+  position: relative;
+    height: 0px;
+    width: fit-content;
+    margin: auto;
+    margin-bottom: 80px!important;
+    margin-left: -20px;
+}
+
+#demo-cursor{
+   transition: background-color 0.2s linear;
+}
+
+#democursortext{
+   transition: background-color 0.2s linear;
+}
+
+.ok{
+  transition: background-color 0.2s linear;
+}
+
+.yourcursorspan{
+  margin-bottom:30px;
+      font-size: 18px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+}
+
+.demo-cursor::before{
+      content:"";
+  position:absolute;
+  z-index:-1;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  background-color: inherit;
+    width: 24px;
+  height: 24px;
+/*   background: url("https://cdn.glitch.com/fc76c743-ed4f-40b8-8cf5-889b2f64b004%2Fcursor.png?v=1621812496190"); */
+  position: absolute;
+  z-index: 101;
+  clip-path: polygon(6% 22%, 50% 30%, 94% 22%, 66% 55%, 50% 95%, 34% 56%);
+  pointer-events: none;
+}
+
+.friend .name::before{
+  display: none;
+}
+
+.name .name-demo::before{
+  display:none;
+}
+
+.online-users{
+padding-top: 20px;
+    padding-left: 20px;
+    display: block!important;
+}
+
+
+.dialog{
+  width: 40vw;
+  height: 80vh;
+  background-color: gainsboro;
+  border-radius: 5px;
+  margin-left: 30vw;
+  margin-right: 30vw;
+  margin-top: 5vh;
+  position: absolute;
+}
+
+.close-dialog{
+margin-right: 0px;
+    margin-top: -50px;
+    margin-left: 200px;
+    /* margin-bottom: 800px; */
+    position: absolute;
+    /* right: 20px; */
+    /* top: 20px;*/
+  border-radius: 50px;
+  height: 46px;
+  width: 46px;
+  background-color: white;
+  border: 2px solid black;
+  cursor: pointer;
+  color: black;
+}
+
+    #dialog {
+    width: calc(100vw - 20vh);
+    height: 80vh;
+    padding: 10vh;
+    position: absolute;
+    top: 0;
+    }
+
+#dialogchild{
+    width: 400px;
+    width: 400px;
+    max-height: calc(80vh - 140px);
+    margin: auto;
+    margin-top: 0px;
+    top: 0px;
+    position: relative;
+    margin-left: auto;
+    /* border: thin solid black; */
+    padding: 70px;
+    background: gainsboro;
+    border-radius: 10px;
+    text-align: center;
+    display: block;
+}
+
+    .hidden {
+      display: none;
+    }
+
+.message{
+  text-align: center;
+    margin: auto;
+    display: block!important;
+      font-size: 24px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+  line-height: 32px;
+  
+}
+
+.message2{
+      font-size: 14px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    line-height: 18px;
+  padding-top: 10px;
+}
+
+.radioscontainer{
+    text-align: left;
+    padding: 40px;
+    height: fit-content;
+    width: fit-content;
+    margin: auto;
+}
+
+.radiobutton{
+  margin-left: 0px;
+}
+
+.cancel{
+  margin-top:5px;
+  background-color: transparent;
+  color: black;
+      font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 24px;
+  cursor: pointer;
+}
+
+
+div:first-of-type {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 5px;
+}
+
+label {
+  margin-right: 15px;
+  line-height: 32px;
+}
+
+input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+
+  border: 2px solid #999;
+  transition: 0.2s all linear;
+  margin-right: 5px;
+
+  position: relative;
+  top: 4px;
+}
+
+#textinput{
+    position: relative;
+    width: 300px;
+    margin: auto;
+    border-radius: 10px;
+    margin-top: 20px;
+    height: 40px;
+    background-color: white;
+    border: 2px solid black;
+    text-align: center;
+      font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 18px;
+}
+
+input:checked {
+  border: 6px solid black;
+}
+
+button,
+legend {
+  color: white;
+  background-color: black;
+  padding: 5px 10px;
+  border-radius: 0;
+  border: 0;
+  font-size: 14px;
+}
+
+button:hover,
+button:focus {
+  color: #999;
+}
+
+button:active {
+  background-color: white;
+  color: black;
+  outline: 1px solid black;
+}
+
+
+.friend-cu{
+  color: black;
+background-color: #C7BFAB;
+}
+
+.error{
+  color: black;
+  background-color: #FF6741!important;
+/*   color: gainsboro; */
+  pointer-events: none;
+  pointer: no-drop;
+}
+
+.undefined{
+  color: black;
+  background-color: gainsboro;
+/*   color: gainsboro; */
+  pointer-events: none;
+  pointer: no-drop;
+}
+
+.alumnus{
+  color: black;
+  background-color: #9DE3B1;
+}
+
+.faculty-staff{
+  color: black;
+  background-color: #FFD480;
+}
+
+.current-student{
+    color: black;
+  background-color: #C7B9FF;
+}
+
+#connections{
+  margin-right: 0px;
+}
+
+
+.ok{
+  
+      background-color: black;
+    color: white;
+    border-radius: 200px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 32px;
+    width: 276px;
+    height: 64px;
+/*     margin-top: 48px; */
+    cursor: pointer;
+}
+
+#dialog{
+  display: none;
+}
+
+
+@media only screen and (max-width: 600px) {
+
+    #dialog {
+/*       width: calc(80vw - 140px);
+      
+      margin: auto;
+      margin-left: 10vw; */
+/*       border: thin solid black; */
+/*       padding: 70px;
+      background: gainsboro;
+      border-radius: 10px;
+      text-align: center; */ 
+    }
+  
+  #dialogchild{
+          width: calc(80vw - 140px);
+      margin: auto;
+      margin-left: auto;
+/*       border: thin solid black; */
+      padding: 10px;
+      background: gainsboro;
+      border-radius: 10px;
+      text-align: center;
+  }
+  
+  #textinput{
+    width: 40vw;
+    
+  }
+  
+  .ok{
+    width: 40vw;
+  }
+  
+  .radioscontainer{
+    padding: 0px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .close-dialog{
+    margin-right: 0px;
+    margin-top: -5vh;
+    margin-left: 29vw;
+    /* margin-bottom: 800px; */
+    position: absolute;
+  }
+  
+  }

@@ -1,4 +1,4 @@
-  const canvas = document.querySelector('#c');
+const canvas = document.querySelector('#c');
   // const renderer = new THREE.WebGLRenderer({canvas});
 const renderer = new THREE.WebGLRenderer( { canvas, alpha: true } ); // init like this
 renderer.setClearColor( 0xffffff, 0 ); // second param is opacity, 0 => transparent
@@ -1059,14 +1059,14 @@ renderer.setClearColor( 0xffffff, 0 ); // second param is opacity, 0 => transpar
   				const renderwidth = window.innerWidth;
 				  const renderheight = window.innerHeight;
   renderer.setSize( renderwidth, renderheight );
-  camera.position.set(-60, -20, 40);
+  camera.position.set(-200, -20, 40);
 var camera_pivot = new THREE.Object3D()
 var Y_AXIS = new THREE.Vector3( 0, 1, 0 );
   const scene = new THREE.Scene();
   scene.background = new THREE.Color('white');
 scene.add( camera_pivot );
 camera_pivot.add( camera );
-camera.position.set( -60, -10, 0 );
+camera.position.set( -100, -10, 0 );
 camera.lookAt( camera_pivot.position );
 
   const controls = new window.OrbitControls(camera, canvas);
@@ -1082,7 +1082,7 @@ camera.lookAt( camera_pivot.position );
   controls.maxZoom = 1;
     controls.autoRotate = true;       // enable rotation
     controls.maxPolarAngle = Math.PI / 2; // Limit angle of visibility
-  
+  // controls.enableDamping();
   
   controls.update();
 
@@ -1146,7 +1146,7 @@ camera.lookAt( camera_pivot.position );
     ctx.translate(width / 2, height / 2);
     ctx.scale(scaleFactor, 1);
     ctx.fillStyle = 'gray';
-    ctx.fillText(name, 0, 0);
+    // ctx.fillText(name, 0, 0);
 
     return ctx.canvas;
   }
@@ -1232,7 +1232,7 @@ camera.lookAt( camera_pivot.position );
 //     });
 //       scene.add(body)
 //     // body.position.y = bodyHeight / 2;
-const map = new THREE.TextureLoader().load( 'https://cdn.glitch.com/3972d6f4-892b-4df1-adda-0da6e2ddf320%2Fblackcircle.png?v=1632087241039' );
+const map = new THREE.TextureLoader().load( './blackcircle.png' );
 const material = new THREE.SpriteMaterial( { map: map, color: 0xffffff } );
 // const sprite = new THREE.Sprite( material );
     
@@ -1779,6 +1779,56 @@ FOOT_LEFT.position.x = 8 - correction
 FOOT_LEFT.position.z = -14
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+
+// foot left to foot right to handtip_thumb_left_pad to handtip_thumb_right_pad
+const material = new THREE.LineBasicMaterial( { color: 0x000000 } );
+const points = [];
+points.push( new THREE.Vector3( (8-correction), 1.35, -14 ) );
+points.push( new THREE.Vector3( (8-correction), 1.35, 14 ) );
+points.push( new THREE.Vector3( (18-correction), 1.35, 14 ) );
+points.push( new THREE.Vector3( (18-correction), 1.35, -14 ) );
+points.push( new THREE.Vector3( (8-correction), 1.35, -14 ) );
+
+const geometry = new THREE.BufferGeometry().setFromPoints( points );
+const line = new THREE.Line( geometry, material );
+
+// scene.add(line)
+
+let points2 = []
+let lines2 = []
+
+for (var i= -1; i<14; i++){
+points2.push(new THREE.Vector3( -2, 1.35, (12-i*2) ))
+points2.push(new THREE.Vector3( 8, 1.35, (12-i*2) ))
+  lines2.push(points2)
+
+  
+  const geometry2 = new THREE.BufferGeometry().setFromPoints( points2 );
+const line2 = new THREE.Line( geometry2, material );
+
+scene.add(line2)
+  
+    points2 = []
+}
+
+let points3 = []
+let lines3 = []
+
+for (var i= -1; i<5; i++){
+points3.push(new THREE.Vector3( (6-i*2), 1.35, 14 ))
+points3.push(new THREE.Vector3( (6-i*2), 1.35, -14 ))
+  lines3.push(points3)
+
+  
+  const geometry2 = new THREE.BufferGeometry().setFromPoints( points3 );
+const line3 = new THREE.Line( geometry2, material );
+
+  scene.add(line3)
+  
+  points3 = []
+}
+
+/////////
 
   // var HEAD = scene.getObjectByName('HEAD');
   console.log(HEAD)
@@ -2660,22 +2710,22 @@ var sliderz = document.getElementById("sliderz")
     }
   }
   
-  document.getElementById("myCheck").checked = true;
-  document.getElementById("myCheck").onclick = function() {
+//   document.getElementById("myCheck").checked = true;
+//   document.getElementById("myCheck").onclick = function() {
 
-  // If the checkbox is checked, display the output text
-  if (document.getElementById("myCheck").checked == true){
-    // console.log("checked")
-    scene.children.forEach(element => showsprite(element))
-  } else {
-    // console.log("not checked")
+//   // If the checkbox is checked, display the output text
+//   if (document.getElementById("myCheck").checked == true){
+//     // console.log("checked")
+//     scene.children.forEach(element => showsprite(element))
+//   } else {
+//     // console.log("not checked")
     
-    scene.children.forEach(element => hidesprite(element)
+//     scene.children.forEach(element => hidesprite(element)
 
     
-  )}
+//   )}
     
-  }
+//   }
  
 
  
@@ -2683,6 +2733,10 @@ var sliderz = document.getElementById("sliderz")
 
   
   function render() {
+          // controls.dampingFactor = 2;   //damping inertia
+    // controls.enableDamping = true;      //Zooming
+  // controls.update();
+    
     if (resizeRendererToDisplaySize(renderer)) {
       const canvas = renderer.domElement;
       camera.aspect = canvas.clientWidth / canvas.clientHeight;
@@ -2718,6 +2772,7 @@ var sliderz = document.getElementById("sliderz")
 
 
 document.getElementById("c").addEventListener("click", function() {
+
   if (INTERSECTED){
 //       // output.innerHTML = this.value;
 //   // console.log("sliderx")
@@ -2757,117 +2812,191 @@ document.getElementById("c").addEventListener("click", function() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-function drawLines(data, multiplier, idle){
-  if (idle) {
-    let positions = [HANDTIP_THUMB_LEFT_PAD_LINE, 
-                     THUMB_LEFT_LINE, 
-                     ARM_LEFT_TOP_PAD_1_LINE, 
-                     ARM_LEFT_TOP_PAD_2_LINE, 
-                     ARM_LEFT_TOP_PAD_3_LINE, 
-                     ARM_LEFT_TOP_PAD_4_LINE, 
-                     EYE_LEFT_LINE, 
-                     NOSE_LINE, 
-                     EYE_RIGHT_LINE, 
-                     ARM_RIGHT_TOP_PAD_4_LINE, 
-                     ARM_RIGHT_TOP_PAD_3_LINE, 
-                     ARM_RIGHT_TOP_PAD_2_LINE, 
-                     ARM_RIGHT_TOP_PAD_1_LINE, 
-                     THUMB_RIGHT_LINE, 
-                     HANDTIP_THUMB_RIGHT_PAD_LINE,
-                     HANDTIP_LEFT_LINE, 
-                     THUMB_HANDTIP_HAND_LEFT_PAD_LINE,
-                     ARM_LEFT_BOTTOM_PAD_1_LINE,
-                     ARM_LEFT_BOTTOM_PAD_2_LINE,
-                     ARM_LEFT_BOTTOM_PAD_3_LINE,
-                     ARM_LEFT_BOTTOM_PAD_4_LINE,
-                     EAR_LEFT_LINE,
-                     HEAD_LINE,
-                     EAR_RIGHT_LINE,
-                     ARM_RIGHT_BOTTOM_PAD_4_LINE,
-                     ARM_RIGHT_BOTTOM_PAD_3_LINE,
-                     ARM_RIGHT_BOTTOM_PAD_2_LINE,
-                     ARM_RIGHT_BOTTOM_PAD_1_LINE,
-                     THUMB_HANDTIP_HAND_RIGHT_PAD_LINE,
-                     HANDTIP_RIGHT_LINE,
-                     HAND_HANDTIP_LEFT_PAD_LINE,
-                     HAND_LEFT_LINE,
-                     WRIST_LEFT_LINE,
-                     ELBOW_LEFT_LINE,
-                     SHOULDER_LEFT_LINE,
-                     CLAVICLE_LEFT_LINE,
-                     NECK_EAR_CLAVICLE_LEFT_PAD_LINE,
-                     NECK_LINE,
-                     NECK_EAR_CLAVICLE_RIGHT_PAD_LINE,
-                     CLAVICLE_RIGHT_LINE,
-                     SHOULDER_RIGHT_LINE,
-                     ELBOW_RIGHT_LINE,
-                     WRIST_RIGHT_LINE,
-                     HAND_RIGHT_LINE,
-                     HAND_HANDTIP_RIGHT_PAD_LINE,
-                     FOOT_LEFT_PAD_EDGE_TOP_LINE,
-                     FOOT_LEFT_PAD_EDGE_TOP_1_LINE,
-                     FOOT_LEFT_PAD_EDGE_TOP_2_LINE,
-                     FOOT_LEFT_PAD_EDGE_TOP_3_LINE,
-                     FOOT_LEFT_PAD_EDGE_TOP_4_LINE,
-                     FOOT_LEFT_PAD_EDGE_TOP_5_LINE,
-                     FOOT_LEFT_PAD_EDGE_TOP_6_LINE,
-                     SPINE_CHEST_LINE,
-                     FOOT_RIGHT_PAD_EDGE_TOP_6_LINE,
-                     FOOT_RIGHT_PAD_EDGE_TOP_5_LINE,
-                     FOOT_RIGHT_PAD_EDGE_TOP_4_LINE,
-                     FOOT_RIGHT_PAD_EDGE_TOP_3_LINE,
-                     FOOT_RIGHT_PAD_EDGE_TOP_2_LINE,
-                     FOOT_RIGHT_PAD_EDGE_TOP_1_LINE,
-                     FOOT_RIGHT_PAD_EDGE_TOP_LINE,
-                     FOOT_LEFT_PAD_EDGE_BOTTOM_LINE,
-                     FOOT_LEFT_PAD_EDGE_BOTTOM_1_LINE,
-                     FOOT_LEFT_PAD_EDGE_BOTTOM_2_LINE,
-                     FOOT_LEFT_PAD_EDGE_BOTTOM_3_LINE,
-                     FOOT_LEFT_PAD_EDGE_BOTTOM_4_LINE,
-                     FOOT_LEFT_PAD_EDGE_BOTTOM_5_LINE,
-                     FOOT_LEFT_PAD_EDGE_BOTTOM_6_LINE,
-                     SPINE_NAVAL_LINE,
-                     FOOT_RIGHT_PAD_EDGE_BOTTOM_6_LINE,
-                     FOOT_RIGHT_PAD_EDGE_BOTTOM_5_LINE,
-                     FOOT_RIGHT_PAD_EDGE_BOTTOM_4_LINE,
-                     FOOT_RIGHT_PAD_EDGE_BOTTOM_3_LINE,
-                     FOOT_RIGHT_PAD_EDGE_BOTTOM_2_LINE,
-                     FOOT_RIGHT_PAD_EDGE_BOTTOM_1_LINE,
-                     FOOT_RIGHT_PAD_EDGE_BOTTOM_LINE,
-                     FOOT_LEFT_LINE,
-                     ANKLE_LEFT_PAD_LINE,
-                     ANKLE_LEFT_LINE,
-                     KNEE_LEFT_PAD_LINE,
-                     KNEE_LEFT_LINE,
-                     HIP_LEFT_PAD_LINE,
-                     HIP_LEFT_LINE,
-                     PELVIS_LINE,
-                     HIP_RIGHT_LINE,
-                     HIP_RIGHT_PAD_LINE,
-                     KNEE_RIGHT_LINE,
-                     KNEE_RIGHT_PAD_LINE,
-                     ANKLE_RIGHT_LINE,
-                     ANKLE_RIGHT_PAD_LINE,
-                     FOOT_RIGHT_LINE
-                    ]
-    
-    for (var i=0; i<positions.length; i++){
-      positions[i].geometry.attributes.position.array[1] = data[i].position.y
-      positions[i].geometry.attributes.position.needsUpdate = true;
-    }
-    
-  } else {
-    
-  
+function updateSpheres(data){
+  // console.log(data[0])
+  if (data){
+  let multiplier = -15
+
+ 
   let shoulderavg = (data[12].y + data[11].y)/2;
   let heady = (data[10].y + data[9].y)/2
   let shoulderneckavg = (shoulderavg + heady)/2
   let pelvisavg = ((data[24].y + data[23].y)/2)
   let neckpelvisavg = (shoulderneckavg + pelvisavg)/2
   
-  const PELVIS_LINEpositions = PELVIS_LINE.geometry.attributes.position.array;
-	PELVIS_LINEpositions[ 1 ] = ((data[24].y + data[23].y)/2)*multiplier;
-  PELVIS_LINE.geometry.attributes.position.needsUpdate = true;
+  PELVIS.position.y = ((data[24].y + data[23].y)/2)*multiplier //good
+  HEAD.position.y = ((data[10].y + data[9].y)/2)*multiplier // [9] and [10] average //it will be to calculate "neck"
+  NECK.position.y = shoulderneckavg*multiplier
+  SPINE_CHEST.position.y = ((shoulderneckavg + neckpelvisavg)/2)*multiplier //maybe that's supposed to be neck????
+	SPINE_NAVAL.position.y = ((pelvisavg + neckpelvisavg)/2)*multiplier
+	NOSE.position.y = (data[0].y)*multiplier    //[0]
+    
+    
+  CLAVICLE_RIGHT.position.y = ((shoulderneckavg + data[11].y)/2)*multiplier
+  CLAVICLE_LEFT.position.y = ((shoulderneckavg + data[12].y)/2)*multiplier  
+    
+	SHOULDER_RIGHT.position.y = ((data[11].y))*multiplier
+    
+  ELBOW_RIGHT.position.y = ((data[13].y))*multiplier
+	WRIST_RIGHT.position.y = ((data[15].y))*multiplier
+    
+	HAND_RIGHT.position.y = ((data[19].y + data[15].y + data[17].y)/3)*multiplier
+    
+	HANDTIP_RIGHT.position.y = (data[19].y)*multiplier
+	THUMB_RIGHT.position.y = (data[21].y)*multiplier
+	
+	SHOULDER_LEFT.position.y = (data[12].y)*multiplier
+	ELBOW_LEFT.position.y = (data[14].y)*multiplier
+    
+	WRIST_LEFT.position.y = (data[16].y)*multiplier
+    
+	HAND_LEFT.position.y = ((data[16].y + data[18].y + data[20].y)/3)*multiplier
+    
+	HANDTIP_LEFT.position.y = (data[20].y)*multiplier
+	THUMB_LEFT.position.y = (data[22].y)*multiplier
+ 
+	KNEE_RIGHT.position.y = (data[25].y)*multiplier
+	ANKLE_RIGHT.position.y = (data[27].y)*multiplier
+	FOOT_RIGHT.position.y = (data[31].y)*multiplier
+    
+  HIP_RIGHT.position.y = (data[23].y)*multiplier
+	HIP_LEFT.position.y = (data[24].y)*multiplier
+    
+	KNEE_LEFT.position.y = (data[26].y)*multiplier
+	ANKLE_LEFT.position.y = (data[28].y)*multiplier
+	FOOT_LEFT.position.y = (data[32].y)*multiplier
+	
+
+	EYE_RIGHT.position.y = ((data[1].y + data[2].y + data[3].y)/3)*multiplier 
+	EAR_RIGHT.position.y = (data[7].y)*multiplier
+  
+	EYE_LEFT.position.y = ((data[6].y + data[5].y + data[4].y)/3)*multiplier
+	EAR_LEFT.position.y = (data[8].y)*multiplier
+    
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    NECK_EAR_CLAVICLE_LEFT_PAD.position.y = (CLAVICLE_LEFT.position.y + EAR_LEFT.position.y + NECK.position.y )/3
+    NECK_EAR_CLAVICLE_RIGHT_PAD.position.y = (CLAVICLE_RIGHT.position.y + EAR_RIGHT.position.y + NECK.position.y )/3
+
+    HAND_HANDTIP_LEFT_PAD.position.y = (HAND_LEFT.position.y + HANDTIP_LEFT.position.y)/2
+    HANDTIP_THUMB_LEFT_PAD.position.y = (HANDTIP_LEFT.position.y + THUMB_LEFT.position.y)/2
+    THUMB_HANDTIP_HAND_LEFT_PAD.position.y = (HANDTIP_LEFT.position.y + THUMB_LEFT.position.y + HAND_LEFT.position.y)/3
+
+    HAND_HANDTIP_RIGHT_PAD.position.y = (HAND_RIGHT.position.y + HANDTIP_RIGHT.position.y)/2
+    HANDTIP_THUMB_RIGHT_PAD.position.y = (HANDTIP_RIGHT.position.y + THUMB_RIGHT.position.y)/2
+    THUMB_HANDTIP_HAND_RIGHT_PAD.position.y = (HANDTIP_RIGHT.position.y + THUMB_RIGHT.position.y + HAND_RIGHT.position.y)/3
+  // HAND_HANDTIP_LEFT_PAD
+  // FOOT_LEFT
+  
+ANKLE_LEFT_PAD.position.y = ( ANKLE_LEFT.position.y + FOOT_LEFT.position.y )/2
+KNEE_LEFT_PAD.position.y = ( ANKLE_LEFT.position.y + KNEE_LEFT.position.y )/2
+HIP_LEFT_PAD.position.y = ( HIP_LEFT.position.y + KNEE_LEFT.position.y )/2
+  
+ANKLE_RIGHT_PAD.position.y = ( ANKLE_RIGHT.position.y + FOOT_RIGHT.position.y )/2
+KNEE_RIGHT_PAD.position.y = ( ANKLE_RIGHT.position.y + KNEE_RIGHT.position.y )/2
+HIP_RIGHT_PAD.position.y = ( HIP_RIGHT.position.y + KNEE_RIGHT.position.y )/2    
+    
+    
+FOOT_LEFT_PAD_EDGE_BOTTOM.position.y = HAND_HANDTIP_LEFT_PAD.position.y+0.66666*(FOOT_LEFT.position.y-HAND_HANDTIP_LEFT_PAD.position.y)
+FOOT_LEFT_PAD_EDGE_TOP.position.y = HAND_HANDTIP_LEFT_PAD.position.y+0.33333*(FOOT_LEFT.position.y-HAND_HANDTIP_LEFT_PAD.position.y)
+    
+FOOT_RIGHT_PAD_EDGE_BOTTOM.position.y = HAND_HANDTIP_RIGHT_PAD.position.y+0.66666*(FOOT_RIGHT.position.y-HAND_HANDTIP_RIGHT_PAD.position.y)
+FOOT_RIGHT_PAD_EDGE_TOP.position.y = HAND_HANDTIP_RIGHT_PAD.position.y+0.33333*(FOOT_RIGHT.position.y-HAND_HANDTIP_RIGHT_PAD.position.y)
+    
+FOOT_LEFT_PAD_EDGE_BOTTOM_1.position.y = HAND_LEFT.position.y+0.66666*(ANKLE_LEFT_PAD.position.y-HAND_LEFT.position.y)
+FOOT_LEFT_PAD_EDGE_TOP_1.position.y = HAND_LEFT.position.y+0.33333*(ANKLE_LEFT_PAD.position.y-HAND_LEFT.position.y)
+    
+FOOT_RIGHT_PAD_EDGE_BOTTOM_1.position.y = HAND_RIGHT.position.y+0.66666*(ANKLE_RIGHT_PAD.position.y-HAND_RIGHT.position.y)
+FOOT_RIGHT_PAD_EDGE_TOP_1.position.y = HAND_RIGHT.position.y+0.33333*(ANKLE_RIGHT_PAD.position.y-HAND_RIGHT.position.y)
+    
+FOOT_LEFT_PAD_EDGE_BOTTOM_2.position.y = WRIST_LEFT.position.y+0.66666*(ANKLE_LEFT.position.y-WRIST_LEFT.position.y)
+FOOT_LEFT_PAD_EDGE_TOP_2.position.y = WRIST_LEFT.position.y+0.33333*(ANKLE_LEFT.position.y-WRIST_LEFT.position.y)
+    
+FOOT_RIGHT_PAD_EDGE_BOTTOM_2.position.y = WRIST_RIGHT.position.y+0.66666*(ANKLE_RIGHT.position.y-WRIST_RIGHT.position.y)
+FOOT_RIGHT_PAD_EDGE_TOP_2.position.y = WRIST_RIGHT.position.y+0.33333*(ANKLE_RIGHT.position.y-WRIST_RIGHT.position.y)
+    
+FOOT_LEFT_PAD_EDGE_BOTTOM_3.position.y = ELBOW_LEFT.position.y+0.66666*(KNEE_LEFT_PAD.position.y-ELBOW_LEFT.position.y)
+FOOT_LEFT_PAD_EDGE_TOP_3.position.y = ELBOW_LEFT.position.y+0.33333*(KNEE_LEFT_PAD.position.y-ELBOW_LEFT.position.y)
+    
+FOOT_RIGHT_PAD_EDGE_BOTTOM_3.position.y = ELBOW_RIGHT.position.y+0.66666*(KNEE_RIGHT_PAD.position.y-ELBOW_RIGHT.position.y)
+FOOT_RIGHT_PAD_EDGE_TOP_3.position.y = ELBOW_RIGHT.position.y+0.33333*(KNEE_RIGHT_PAD.position.y-ELBOW_RIGHT.position.y)
+    
+FOOT_LEFT_PAD_EDGE_BOTTOM_4.position.y = SHOULDER_LEFT.position.y+0.66666*(KNEE_LEFT.position.y-SHOULDER_LEFT.position.y)
+FOOT_LEFT_PAD_EDGE_TOP_4.position.y = SHOULDER_LEFT.position.y+0.33333*(KNEE_LEFT.position.y-SHOULDER_LEFT.position.y)
+    
+FOOT_RIGHT_PAD_EDGE_BOTTOM_4.position.y = SHOULDER_RIGHT.position.y+0.66666*(KNEE_RIGHT.position.y-SHOULDER_RIGHT.position.y)
+FOOT_RIGHT_PAD_EDGE_TOP_4.position.y = SHOULDER_RIGHT.position.y+0.33333*(KNEE_RIGHT.position.y-SHOULDER_RIGHT.position.y)
+    
+FOOT_LEFT_PAD_EDGE_BOTTOM_5.position.y = CLAVICLE_LEFT.position.y+0.66666*(HIP_LEFT_PAD.position.y-CLAVICLE_LEFT.position.y)
+FOOT_LEFT_PAD_EDGE_TOP_5.position.y = CLAVICLE_LEFT.position.y+0.33333*(HIP_LEFT_PAD.position.y-CLAVICLE_LEFT.position.y)
+    
+FOOT_RIGHT_PAD_EDGE_BOTTOM_5.position.y = CLAVICLE_RIGHT.position.y+0.66666*(HIP_RIGHT_PAD.position.y-CLAVICLE_RIGHT.position.y)
+FOOT_RIGHT_PAD_EDGE_TOP_5.position.y = CLAVICLE_RIGHT.position.y+0.33333*(HIP_RIGHT_PAD.position.y-CLAVICLE_RIGHT.position.y)
+
+FOOT_LEFT_PAD_EDGE_TOP_6.position.y = (FOOT_LEFT_PAD_EDGE_TOP_5.position.y + SPINE_CHEST.position.y )/2
+FOOT_RIGHT_PAD_EDGE_TOP_6.position.y = (FOOT_RIGHT_PAD_EDGE_TOP_5.position.y + SPINE_CHEST.position.y )/2
+FOOT_LEFT_PAD_EDGE_BOTTOM_6.position.y = (FOOT_LEFT_PAD_EDGE_BOTTOM_5.position.y + SPINE_NAVAL.position.y )/2
+FOOT_RIGHT_PAD_EDGE_BOTTOM_6.position.y = (FOOT_RIGHT_PAD_EDGE_BOTTOM_5.position.y + SPINE_NAVAL.position.y )/2
+
+ARM_LEFT_TOP_PAD_1.position.y = THUMB_LEFT.position.y+0.2*(EYE_LEFT.position.y-THUMB_LEFT.position.y)
+ARM_LEFT_TOP_PAD_2.position.y = THUMB_LEFT.position.y+0.4*(EYE_LEFT.position.y-THUMB_LEFT.position.y)
+ARM_LEFT_TOP_PAD_3.position.y = THUMB_LEFT.position.y+0.6*(EYE_LEFT.position.y-THUMB_LEFT.position.y)
+ARM_LEFT_TOP_PAD_4.position.y = THUMB_LEFT.position.y+0.8*(EYE_LEFT.position.y-THUMB_LEFT.position.y)
+  
+ARM_RIGHT_TOP_PAD_1.position.y = THUMB_RIGHT.position.y+0.2*(EYE_RIGHT.position.y-THUMB_RIGHT.position.y)
+ARM_RIGHT_TOP_PAD_2.position.y = THUMB_RIGHT.position.y+0.4*(EYE_RIGHT.position.y-THUMB_RIGHT.position.y)
+ARM_RIGHT_TOP_PAD_3.position.y = THUMB_RIGHT.position.y+0.6*(EYE_RIGHT.position.y-THUMB_RIGHT.position.y)
+ARM_RIGHT_TOP_PAD_4.position.y = THUMB_RIGHT.position.y+0.8*(EYE_RIGHT.position.y-THUMB_RIGHT.position.y)    
+
+ARM_LEFT_BOTTOM_PAD_1.position.y = (ARM_LEFT_TOP_PAD_1.position.y + WRIST_LEFT.position.y + THUMB_HANDTIP_HAND_LEFT_PAD.position.y)/3
+ARM_LEFT_BOTTOM_PAD_2.position.y = (ARM_LEFT_TOP_PAD_2.position.y + ELBOW_LEFT.position.y + ARM_LEFT_BOTTOM_PAD_1.position.y)/3
+ARM_LEFT_BOTTOM_PAD_3.position.y = (ARM_LEFT_TOP_PAD_3.position.y + SHOULDER_LEFT.position.y + ARM_LEFT_BOTTOM_PAD_2.position.y)/3
+ARM_LEFT_BOTTOM_PAD_4.position.y = (ARM_LEFT_TOP_PAD_4.position.y + CLAVICLE_LEFT.position.y + ARM_LEFT_BOTTOM_PAD_3.position.y + EAR_LEFT.position.y)/4
+  
+ARM_RIGHT_BOTTOM_PAD_1.position.y = (ARM_RIGHT_TOP_PAD_1.position.y + WRIST_RIGHT.position.y + THUMB_HANDTIP_HAND_RIGHT_PAD.position.y)/3
+ARM_RIGHT_BOTTOM_PAD_2.position.y = (ARM_RIGHT_TOP_PAD_2.position.y + ELBOW_RIGHT.position.y + ARM_RIGHT_BOTTOM_PAD_1.position.y)/3
+ARM_RIGHT_BOTTOM_PAD_3.position.y = (ARM_RIGHT_TOP_PAD_3.position.y + SHOULDER_RIGHT.position.y + ARM_RIGHT_BOTTOM_PAD_2.position.y)/3
+ARM_RIGHT_BOTTOM_PAD_4.position.y = (ARM_RIGHT_TOP_PAD_4.position.y + CLAVICLE_RIGHT.position.y + ARM_RIGHT_BOTTOM_PAD_3.position.y + EAR_RIGHT.position.y)/4
+    
+    
+    
+    
+    
+    
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
+      ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
+    
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
+    
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
+    
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
+    
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
+    
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
+    
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
+    
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
+    
+
+    const PELVIS_LINEpositions = PELVIS_LINE.geometry.attributes.position.array;
+		PELVIS_LINEpositions[ 1 ] = ((data[24].y + data[23].y)/2)*multiplier;
+    PELVIS_LINE.geometry.attributes.position.needsUpdate = true;
     
     
   const  HEAD_LINEpositions = HEAD_LINE.geometry.attributes.position.array
@@ -3234,221 +3363,5 @@ ARM_RIGHT_BOTTOM_PAD_4_LINEpositions[1] = (ARM_RIGHT_TOP_PAD_4.position.y + CLAV
                  ARM_RIGHT_BOTTOM_PAD_2_LINE.geometry.attributes.position.needsUpdate = true;
                  ARM_RIGHT_BOTTOM_PAD_3_LINE.geometry.attributes.position.needsUpdate = true;
                   ARM_RIGHT_BOTTOM_PAD_4_LINE.geometry.attributes.position.needsUpdate = true;
-}
-}
-
-function updateSpheres(data){
-  // console.log(data[0])
-  if (data){
-  let multiplier = -8
-  window.multiplier = multiplier
- 
-  let shoulderavg = (data[12].y + data[11].y)/2;
-  let heady = (data[10].y + data[9].y)/2
-  let shoulderneckavg = (shoulderavg + heady)/2
-  let pelvisavg = ((data[24].y + data[23].y)/2)
-  let neckpelvisavg = (shoulderneckavg + pelvisavg)/2
-  
-  PELVIS.position.y = ((data[24].y + data[23].y)/2)*multiplier //good
-  HEAD.position.y = ((data[10].y + data[9].y)/2)*multiplier // [9] and [10] average //it will be to calculate "neck"
-  NECK.position.y = shoulderneckavg*multiplier
-  SPINE_CHEST.position.y = ((shoulderneckavg + neckpelvisavg)/2)*multiplier //maybe that's supposed to be neck????
-	SPINE_NAVAL.position.y = ((pelvisavg + neckpelvisavg)/2)*multiplier
-	NOSE.position.y = (data[0].y)*multiplier    //[0]
-    
-    
-  CLAVICLE_RIGHT.position.y = ((shoulderneckavg + data[11].y)/2)*multiplier
-  CLAVICLE_LEFT.position.y = ((shoulderneckavg + data[12].y)/2)*multiplier  
-    
-	SHOULDER_RIGHT.position.y = ((data[11].y))*multiplier
-    
-  ELBOW_RIGHT.position.y = ((data[13].y))*multiplier
-	WRIST_RIGHT.position.y = ((data[15].y))*multiplier
-    
-	HAND_RIGHT.position.y = ((data[19].y + data[15].y + data[17].y)/3)*multiplier
-    
-	HANDTIP_RIGHT.position.y = (data[19].y)*multiplier
-	THUMB_RIGHT.position.y = (data[21].y)*multiplier
-	
-	SHOULDER_LEFT.position.y = (data[12].y)*multiplier
-	ELBOW_LEFT.position.y = (data[14].y)*multiplier
-    
-	WRIST_LEFT.position.y = (data[16].y)*multiplier
-    
-	HAND_LEFT.position.y = ((data[16].y + data[18].y + data[20].y)/3)*multiplier
-    
-	HANDTIP_LEFT.position.y = (data[20].y)*multiplier
-	THUMB_LEFT.position.y = (data[22].y)*multiplier
- 
-	KNEE_RIGHT.position.y = (data[25].y)*multiplier
-	ANKLE_RIGHT.position.y = (data[27].y)*multiplier
-	FOOT_RIGHT.position.y = (data[31].y)*multiplier
-    
-  HIP_RIGHT.position.y = (data[23].y)*multiplier
-	HIP_LEFT.position.y = (data[24].y)*multiplier
-    
-	KNEE_LEFT.position.y = (data[26].y)*multiplier
-	ANKLE_LEFT.position.y = (data[28].y)*multiplier
-	FOOT_LEFT.position.y = (data[32].y)*multiplier
-	
-
-	EYE_RIGHT.position.y = ((data[1].y + data[2].y + data[3].y)/3)*multiplier 
-	EAR_RIGHT.position.y = (data[7].y)*multiplier
-  
-	EYE_LEFT.position.y = ((data[6].y + data[5].y + data[4].y)/3)*multiplier
-	EAR_LEFT.position.y = (data[8].y)*multiplier
-    
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
-    NECK_EAR_CLAVICLE_LEFT_PAD.position.y = (CLAVICLE_LEFT.position.y + EAR_LEFT.position.y + NECK.position.y )/3
-    NECK_EAR_CLAVICLE_RIGHT_PAD.position.y = (CLAVICLE_RIGHT.position.y + EAR_RIGHT.position.y + NECK.position.y )/3
-
-    HAND_HANDTIP_LEFT_PAD.position.y = (HAND_LEFT.position.y + HANDTIP_LEFT.position.y)/2
-    HANDTIP_THUMB_LEFT_PAD.position.y = (HANDTIP_LEFT.position.y + THUMB_LEFT.position.y)/2
-    THUMB_HANDTIP_HAND_LEFT_PAD.position.y = (HANDTIP_LEFT.position.y + THUMB_LEFT.position.y + HAND_LEFT.position.y)/3
-
-    HAND_HANDTIP_RIGHT_PAD.position.y = (HAND_RIGHT.position.y + HANDTIP_RIGHT.position.y)/2
-    HANDTIP_THUMB_RIGHT_PAD.position.y = (HANDTIP_RIGHT.position.y + THUMB_RIGHT.position.y)/2
-    THUMB_HANDTIP_HAND_RIGHT_PAD.position.y = (HANDTIP_RIGHT.position.y + THUMB_RIGHT.position.y + HAND_RIGHT.position.y)/3
-  // HAND_HANDTIP_LEFT_PAD
-  // FOOT_LEFT
-  
-ANKLE_LEFT_PAD.position.y = ( ANKLE_LEFT.position.y + FOOT_LEFT.position.y )/2
-KNEE_LEFT_PAD.position.y = ( ANKLE_LEFT.position.y + KNEE_LEFT.position.y )/2
-HIP_LEFT_PAD.position.y = ( HIP_LEFT.position.y + KNEE_LEFT.position.y )/2
-  
-ANKLE_RIGHT_PAD.position.y = ( ANKLE_RIGHT.position.y + FOOT_RIGHT.position.y )/2
-KNEE_RIGHT_PAD.position.y = ( ANKLE_RIGHT.position.y + KNEE_RIGHT.position.y )/2
-HIP_RIGHT_PAD.position.y = ( HIP_RIGHT.position.y + KNEE_RIGHT.position.y )/2    
-    
-    
-FOOT_LEFT_PAD_EDGE_BOTTOM.position.y = HAND_HANDTIP_LEFT_PAD.position.y+0.66666*(FOOT_LEFT.position.y-HAND_HANDTIP_LEFT_PAD.position.y)
-FOOT_LEFT_PAD_EDGE_TOP.position.y = HAND_HANDTIP_LEFT_PAD.position.y+0.33333*(FOOT_LEFT.position.y-HAND_HANDTIP_LEFT_PAD.position.y)
-    
-FOOT_RIGHT_PAD_EDGE_BOTTOM.position.y = HAND_HANDTIP_RIGHT_PAD.position.y+0.66666*(FOOT_RIGHT.position.y-HAND_HANDTIP_RIGHT_PAD.position.y)
-FOOT_RIGHT_PAD_EDGE_TOP.position.y = HAND_HANDTIP_RIGHT_PAD.position.y+0.33333*(FOOT_RIGHT.position.y-HAND_HANDTIP_RIGHT_PAD.position.y)
-    
-FOOT_LEFT_PAD_EDGE_BOTTOM_1.position.y = HAND_LEFT.position.y+0.66666*(ANKLE_LEFT_PAD.position.y-HAND_LEFT.position.y)
-FOOT_LEFT_PAD_EDGE_TOP_1.position.y = HAND_LEFT.position.y+0.33333*(ANKLE_LEFT_PAD.position.y-HAND_LEFT.position.y)
-    
-FOOT_RIGHT_PAD_EDGE_BOTTOM_1.position.y = HAND_RIGHT.position.y+0.66666*(ANKLE_RIGHT_PAD.position.y-HAND_RIGHT.position.y)
-FOOT_RIGHT_PAD_EDGE_TOP_1.position.y = HAND_RIGHT.position.y+0.33333*(ANKLE_RIGHT_PAD.position.y-HAND_RIGHT.position.y)
-    
-FOOT_LEFT_PAD_EDGE_BOTTOM_2.position.y = WRIST_LEFT.position.y+0.66666*(ANKLE_LEFT.position.y-WRIST_LEFT.position.y)
-FOOT_LEFT_PAD_EDGE_TOP_2.position.y = WRIST_LEFT.position.y+0.33333*(ANKLE_LEFT.position.y-WRIST_LEFT.position.y)
-    
-FOOT_RIGHT_PAD_EDGE_BOTTOM_2.position.y = WRIST_RIGHT.position.y+0.66666*(ANKLE_RIGHT.position.y-WRIST_RIGHT.position.y)
-FOOT_RIGHT_PAD_EDGE_TOP_2.position.y = WRIST_RIGHT.position.y+0.33333*(ANKLE_RIGHT.position.y-WRIST_RIGHT.position.y)
-    
-FOOT_LEFT_PAD_EDGE_BOTTOM_3.position.y = ELBOW_LEFT.position.y+0.66666*(KNEE_LEFT_PAD.position.y-ELBOW_LEFT.position.y)
-FOOT_LEFT_PAD_EDGE_TOP_3.position.y = ELBOW_LEFT.position.y+0.33333*(KNEE_LEFT_PAD.position.y-ELBOW_LEFT.position.y)
-    
-FOOT_RIGHT_PAD_EDGE_BOTTOM_3.position.y = ELBOW_RIGHT.position.y+0.66666*(KNEE_RIGHT_PAD.position.y-ELBOW_RIGHT.position.y)
-FOOT_RIGHT_PAD_EDGE_TOP_3.position.y = ELBOW_RIGHT.position.y+0.33333*(KNEE_RIGHT_PAD.position.y-ELBOW_RIGHT.position.y)
-    
-FOOT_LEFT_PAD_EDGE_BOTTOM_4.position.y = SHOULDER_LEFT.position.y+0.66666*(KNEE_LEFT.position.y-SHOULDER_LEFT.position.y)
-FOOT_LEFT_PAD_EDGE_TOP_4.position.y = SHOULDER_LEFT.position.y+0.33333*(KNEE_LEFT.position.y-SHOULDER_LEFT.position.y)
-    
-FOOT_RIGHT_PAD_EDGE_BOTTOM_4.position.y = SHOULDER_RIGHT.position.y+0.66666*(KNEE_RIGHT.position.y-SHOULDER_RIGHT.position.y)
-FOOT_RIGHT_PAD_EDGE_TOP_4.position.y = SHOULDER_RIGHT.position.y+0.33333*(KNEE_RIGHT.position.y-SHOULDER_RIGHT.position.y)
-    
-FOOT_LEFT_PAD_EDGE_BOTTOM_5.position.y = CLAVICLE_LEFT.position.y+0.66666*(HIP_LEFT_PAD.position.y-CLAVICLE_LEFT.position.y)
-FOOT_LEFT_PAD_EDGE_TOP_5.position.y = CLAVICLE_LEFT.position.y+0.33333*(HIP_LEFT_PAD.position.y-CLAVICLE_LEFT.position.y)
-    
-FOOT_RIGHT_PAD_EDGE_BOTTOM_5.position.y = CLAVICLE_RIGHT.position.y+0.66666*(HIP_RIGHT_PAD.position.y-CLAVICLE_RIGHT.position.y)
-FOOT_RIGHT_PAD_EDGE_TOP_5.position.y = CLAVICLE_RIGHT.position.y+0.33333*(HIP_RIGHT_PAD.position.y-CLAVICLE_RIGHT.position.y)
-
-FOOT_LEFT_PAD_EDGE_TOP_6.position.y = (FOOT_LEFT_PAD_EDGE_TOP_5.position.y + SPINE_CHEST.position.y )/2
-FOOT_RIGHT_PAD_EDGE_TOP_6.position.y = (FOOT_RIGHT_PAD_EDGE_TOP_5.position.y + SPINE_CHEST.position.y )/2
-FOOT_LEFT_PAD_EDGE_BOTTOM_6.position.y = (FOOT_LEFT_PAD_EDGE_BOTTOM_5.position.y + SPINE_NAVAL.position.y )/2
-FOOT_RIGHT_PAD_EDGE_BOTTOM_6.position.y = (FOOT_RIGHT_PAD_EDGE_BOTTOM_5.position.y + SPINE_NAVAL.position.y )/2
-
-ARM_LEFT_TOP_PAD_1.position.y = THUMB_LEFT.position.y+0.2*(EYE_LEFT.position.y-THUMB_LEFT.position.y)
-ARM_LEFT_TOP_PAD_2.position.y = THUMB_LEFT.position.y+0.4*(EYE_LEFT.position.y-THUMB_LEFT.position.y)
-ARM_LEFT_TOP_PAD_3.position.y = THUMB_LEFT.position.y+0.6*(EYE_LEFT.position.y-THUMB_LEFT.position.y)
-ARM_LEFT_TOP_PAD_4.position.y = THUMB_LEFT.position.y+0.8*(EYE_LEFT.position.y-THUMB_LEFT.position.y)
-  
-ARM_RIGHT_TOP_PAD_1.position.y = THUMB_RIGHT.position.y+0.2*(EYE_RIGHT.position.y-THUMB_RIGHT.position.y)
-ARM_RIGHT_TOP_PAD_2.position.y = THUMB_RIGHT.position.y+0.4*(EYE_RIGHT.position.y-THUMB_RIGHT.position.y)
-ARM_RIGHT_TOP_PAD_3.position.y = THUMB_RIGHT.position.y+0.6*(EYE_RIGHT.position.y-THUMB_RIGHT.position.y)
-ARM_RIGHT_TOP_PAD_4.position.y = THUMB_RIGHT.position.y+0.8*(EYE_RIGHT.position.y-THUMB_RIGHT.position.y)    
-
-ARM_LEFT_BOTTOM_PAD_1.position.y = (ARM_LEFT_TOP_PAD_1.position.y + WRIST_LEFT.position.y + THUMB_HANDTIP_HAND_LEFT_PAD.position.y)/3
-ARM_LEFT_BOTTOM_PAD_2.position.y = (ARM_LEFT_TOP_PAD_2.position.y + ELBOW_LEFT.position.y + ARM_LEFT_BOTTOM_PAD_1.position.y)/3
-ARM_LEFT_BOTTOM_PAD_3.position.y = (ARM_LEFT_TOP_PAD_3.position.y + SHOULDER_LEFT.position.y + ARM_LEFT_BOTTOM_PAD_2.position.y)/3
-ARM_LEFT_BOTTOM_PAD_4.position.y = (ARM_LEFT_TOP_PAD_4.position.y + CLAVICLE_LEFT.position.y + ARM_LEFT_BOTTOM_PAD_3.position.y + EAR_LEFT.position.y)/4
-  
-ARM_RIGHT_BOTTOM_PAD_1.position.y = (ARM_RIGHT_TOP_PAD_1.position.y + WRIST_RIGHT.position.y + THUMB_HANDTIP_HAND_RIGHT_PAD.position.y)/3
-ARM_RIGHT_BOTTOM_PAD_2.position.y = (ARM_RIGHT_TOP_PAD_2.position.y + ELBOW_RIGHT.position.y + ARM_RIGHT_BOTTOM_PAD_1.position.y)/3
-ARM_RIGHT_BOTTOM_PAD_3.position.y = (ARM_RIGHT_TOP_PAD_3.position.y + SHOULDER_RIGHT.position.y + ARM_RIGHT_BOTTOM_PAD_2.position.y)/3
-ARM_RIGHT_BOTTOM_PAD_4.position.y = (ARM_RIGHT_TOP_PAD_4.position.y + CLAVICLE_RIGHT.position.y + ARM_RIGHT_BOTTOM_PAD_3.position.y + EAR_RIGHT.position.y)/4
-    
-    
-    
-    
-    
-    
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
-      ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
-    
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
-    
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
-    
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
-    
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
-    
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
-    
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
-    
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////LINES
-    
-drawLines(data, multiplier)
-
   } 
-}
-
-
-
-function idle(){
-
-
-  
-  let positionsArr =[HANDTIP_THUMB_LEFT_PAD, THUMB_LEFT, ARM_LEFT_TOP_PAD_1, ARM_LEFT_TOP_PAD_2,ARM_LEFT_TOP_PAD_3,ARM_LEFT_TOP_PAD_4,EYE_LEFT,NOSE,EYE_RIGHT,ARM_RIGHT_TOP_PAD_4,ARM_RIGHT_TOP_PAD_3,ARM_RIGHT_TOP_PAD_2,ARM_RIGHT_TOP_PAD_1,THUMB_RIGHT,HANDTIP_THUMB_RIGHT_PAD,
-                     HANDTIP_LEFT, THUMB_HANDTIP_HAND_LEFT_PAD,ARM_LEFT_BOTTOM_PAD_1,ARM_LEFT_BOTTOM_PAD_2,ARM_LEFT_BOTTOM_PAD_3,ARM_LEFT_BOTTOM_PAD_4,EAR_LEFT,HEAD,EAR_RIGHT,ARM_RIGHT_BOTTOM_PAD_4,ARM_RIGHT_BOTTOM_PAD_3,ARM_RIGHT_BOTTOM_PAD_2,ARM_RIGHT_BOTTOM_PAD_1,THUMB_HANDTIP_HAND_RIGHT_PAD,HANDTIP_RIGHT,
-                     HAND_HANDTIP_LEFT_PAD,HAND_LEFT,WRIST_LEFT,ELBOW_LEFT,SHOULDER_LEFT,CLAVICLE_LEFT,NECK_EAR_CLAVICLE_LEFT_PAD,NECK,NECK_EAR_CLAVICLE_RIGHT_PAD,CLAVICLE_RIGHT,SHOULDER_RIGHT,ELBOW_RIGHT,WRIST_RIGHT,HAND_RIGHT,HAND_HANDTIP_RIGHT_PAD,
-                     FOOT_LEFT_PAD_EDGE_TOP,FOOT_LEFT_PAD_EDGE_TOP_1,FOOT_LEFT_PAD_EDGE_TOP_2,FOOT_LEFT_PAD_EDGE_TOP_3,FOOT_LEFT_PAD_EDGE_TOP_4,FOOT_LEFT_PAD_EDGE_TOP_5,FOOT_LEFT_PAD_EDGE_TOP_6,SPINE_CHEST,FOOT_RIGHT_PAD_EDGE_TOP_6,FOOT_RIGHT_PAD_EDGE_TOP_5,FOOT_RIGHT_PAD_EDGE_TOP_4,FOOT_RIGHT_PAD_EDGE_TOP_3,FOOT_RIGHT_PAD_EDGE_TOP_2,FOOT_RIGHT_PAD_EDGE_TOP_1,FOOT_RIGHT_PAD_EDGE_TOP,
-                     FOOT_LEFT_PAD_EDGE_BOTTOM,FOOT_LEFT_PAD_EDGE_BOTTOM_1,FOOT_LEFT_PAD_EDGE_BOTTOM_2,FOOT_LEFT_PAD_EDGE_BOTTOM_3,FOOT_LEFT_PAD_EDGE_BOTTOM_4,FOOT_LEFT_PAD_EDGE_BOTTOM_5,FOOT_LEFT_PAD_EDGE_BOTTOM_6,SPINE_NAVAL,FOOT_RIGHT_PAD_EDGE_BOTTOM_6,FOOT_RIGHT_PAD_EDGE_BOTTOM_5,FOOT_RIGHT_PAD_EDGE_BOTTOM_4,FOOT_RIGHT_PAD_EDGE_BOTTOM_3,FOOT_RIGHT_PAD_EDGE_BOTTOM_2,FOOT_RIGHT_PAD_EDGE_BOTTOM_1,FOOT_RIGHT_PAD_EDGE_BOTTOM,
-                     FOOT_LEFT,ANKLE_LEFT_PAD,ANKLE_LEFT,KNEE_LEFT_PAD,KNEE_LEFT,HIP_LEFT_PAD,HIP_LEFT,PELVIS,HIP_RIGHT,HIP_RIGHT_PAD,KNEE_RIGHT,KNEE_RIGHT_PAD,ANKLE_RIGHT,ANKLE_RIGHT_PAD,FOOT_RIGHT]
-  
-var time = Date.now() * 0.006;
-	for ( var i = 0; i < positionsArr.length; i ++ ) {
-
-		var child = positionsArr[ i ];
-		var x = child.position.x;
-		var z = child.position.z;
-		var cycle = Math.sin( time * 0.01 ) * 0.3;
-		
-		child.position.y = (Math.sin( time + x * (Math.sin(1519129853500 * 0.01) * 0.3)) * Math.cos( time * 0.5 + z* (Math.sin(1519129853500 * 0.01) * 0.3) ) + 2) - 10;
-	drawLines(positionsArr, window.multiplier, true)
-	}
-  
- 
-
-
 }

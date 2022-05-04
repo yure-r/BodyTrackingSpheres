@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <script></script>
+    <script type="text/javascript" src="./socket.io/socket.io.js"></script>
+
+    <script type="module">
+
+      function promptPromise(message, message2) {
+        var dialog = document.getElementById("dialog");
+        var input = document.getElementById("textinput");
+        var okButton = dialog.querySelector("button.ok");
+        var XButton = dialog.querySelector("button.close-dialog");
+        let radio = "";
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        var button = document.getElementById("action");
+        var output = document.getElementById("prompt");
+        var rolefield = document.getElementById("role");
+
+        const response = { name: name.input, role: name.radio };
+        const mpPose = window;
+        const poseOptions = {
+          locateFile: (file) => {
+            return `https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.4/${file}`;
+          },
+        };
+        const socket = io.connect(window.location.hostname);
+        const drawingUtils = window;
+        const videoElement = document.getElementsByClassName("input_video")[0];
+        const canvasElement =
+          document.getElementsByClassName("output_canvas")[0];
+        const controlsElement =
+          document.getElementsByClassName("control-panel")[0];
+        const canvasCtx = canvasElement.getContext("2d");
+
+        socket.on("sphereMove", function (data) {
+          // console.log(data.data)
+          if (data.data) {
+            console.log(data.data);
+            if (
+              document.getElementsByClassName("output_canvas")[0].height !=
+                data.data[33].nonNormalize[33] ||
+              document.getElementsByClassName("output_canvas")[0].width !=
+                data.data[33].nonNormalize[34]
+            ) {
+              document.getElementsByClassName("output_canvas")[0].height =
+                data.data[33].nonNormalize[33];
+              document.getElementsByClassName("output_canvas")[0].width =
+                data.data[33].nonNormalize[34];
+            }
+
+            let nonNormalize = data.data[33].nonNormalize;
+
+            function nonNormalizeValues(val, max, min) {
+              return (val - min) * (max - min) + 0.25;
+            }
+
+            updateSpheres(data.data);
+
+            for (var i = 0; i < data.data.length; i++) {
+              if (i < 33) {
+                // data.data[i].y = results.poseLandmarks[i].y
+                data.data[i].y = nonNormalizeValues(
+                  data.data[i].y,
+                  data.data[34].maxValue,
+                  data.data[34].minValue
+                );
+              }
+            }
+
+            canvasCtx.clearRect(
+              0,
+              0,
+              canvasElement.width,
+              canvasElement.height
+            );
+            drawingUtils.drawConnectors(
+              canvasCtx,
+              data.data[33].nonNormalize,
+              mpPose.POSE_CONNECTIONS,
+              { visibilityMin: 0.65, color: "black" }
+            );
+            drawingUtils.drawLandmarks(
+              canvasCtx,
+              Object.values(mpPose.POSE_LANDMARKS_LEFT).map(
+                (index) => data.data[33].nonNormalize[index]
+              ),
+              {
+                visibilityMin: 0.65,
+                color: "black",
+                fillColor: "rgb(255,138,0)",
+              }
+            );
+            drawingUtils.drawLandmarks(
+              canvasCtx,
+              Object.values(mpPose.POSE_LANDMARKS_RIGHT).map(
+                (index) => data.data[33].nonNormalize[index]
+              ),
+              {
+                visibilityMin: 0.65,
+                color: "black",
+                fillColor: "rgb(0,217,231)",
+              }
+            );
+            drawingUtils.drawLandmarks(
+              canvasCtx,
+              Object.values(mpPose.POSE_LANDMARKS_NEUTRAL).map(
+                (index) => data.data[33].nonNormalize[index]
+              ),
+              { visibilityMin: 0.65, color: "black", fillColor: "black" }
+            );
+            canvasCtx.restore();
+          }
+        });
+      });
+    </script>
+    <style>
+      .output_canvas {
+        width: auto;
+        height: 22vh;
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        -webkit-flex: 1;
+        margin: auto;
+        border: 1px solid #a5a1a1;
+        background-color: white;
+      }
+
+      @media screen and (max-width: 600px) {
+        .output_canvas {
+          left: 20%;
+          position: absolute;
+          margin: auto;
+          top: 0px;
+          /* left: unset;*/
+          display: none;
+        }
+      }
+    </style>
+    <link rel="stylesheet" type="text/css" href="./style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title> </title>
+  </head>
+
+  <body>
+    <div class="container">
+      <div>
+        <canvas id="c" style="height: 100vh; width: 100vw"></canvas>
+        <canvas class="output_canvas" width="1280px" height="720px"></canvas>
+      </div>
+    </div>
+    <div class="control-panel"></div>
+    <div class="square-box">
+      <div class="landmark-grid-container"></div>
+    </div>
+    <script src="./allthree.js"></script>
+    <script src="./threejs-normalize-2.js"></script>
+    <script src="./control_utils.js" crossorigin="anonymous"></script>
+    <script src="./drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="./pose.js" crossorigin="anonymous"></script>
+    <script src="./camera_utils.js" crossorigin="anonymous"></script>
+  </body>
+</html>

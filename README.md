@@ -1,19 +1,37 @@
-Most of this project, as it stands, was exported from Glitch. 
+Welcome to Glitch
+=================
 
-All of the files that are necessary for this project are in the main branch! The easiest and fastest ways to get this project up and running for yourself, would be to import this repo into a glitch project. 
+Click `Show` in the header to see your app live. Updates to your code will instantly deploy and update live.
 
-To do so you would:
-1. Visit https://glitch.com and create an account.
-2. Click on "new project" and at the bottom of that dropdown, click "import from GitHub" 
-3. Change the url to https://github.com/yure-r/BodyTrackingSpheres
-4. Glitch will automatically clone the "main" branch into the project. 
+**Glitch** is the friendly community where you'll build the app of your dreams. Glitch lets you instantly create, remix, edit, and host an app, bot or site, and you can invite collaborators or helpers to simultaneously edit code with you.
 
-To view and experince your own instance of the body tracking spheres on desktop, open https://[YOUR GLITCH PROJECT NAME].glitch.me/index.html to view the mirror of your body, and https://[YOUR GLITCH PROJECT].glitch.me/normalize-viewer.html to view the socket data of your pose mirror, broadcasted live over the internet. 
+Find out more [about Glitch](https://glitch.com/about).
 
-The index.html file creates a web demo and body tracking socket instance of your pose data.
-The normalize-viewer.html file allows you (or anyone) to view the socket data on any device with internet access. 
 
-After all of those steps are complete, the project should be viewable in this format.
+Your Project
+------------
 
-https://user-images.githubusercontent.com/66575069/142478656-48bea60f-a80e-4e26-8384-46ac8258b0cd.mov
+### ← README.md
 
+That's this file, where you can tell people what your cool website does and how you built it.
+
+### ← index.html
+
+Where you'll write the content of your website. 
+
+### ← style.css
+
+CSS files add styling rules to your content.
+
+### ← script.js
+
+If you're feeling fancy you can add interactivity to your site with JavaScript.
+
+### ← assets
+
+Drag in `assets`, like images or music, to add them to your project
+
+Made by [Glitch](https://glitch.com/)
+-------------------
+
+\ ゜o゜)ノ
