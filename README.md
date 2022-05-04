@@ -8,12 +8,12 @@ To do so you would:
 3. Change the url to https://github.com/yure-r/BodyTrackingSpheres
 4. Glitch will automatically clone the "main" branch into the project. 
 
-To view and experince your own instance of the body tracking spheres on desktop, open https://[YOUR GLITCH PROJECT NAME].glitch.me/index-window.html to view the mirror of your body, and https://[YOUR GLITCH PROJECT].glitch.me/socket-viewer.html to view the socket data of your pose mirror, broadcasted live over the internet. 
+To view and experince your own instance of the body tracking spheres on desktop, open https://[YOUR GLITCH PROJECT NAME].glitch.me/index.html to view the mirror of your body, and https://[YOUR GLITCH PROJECT].glitch.me/normalize-viewer.html to view the socket data of your pose mirror, broadcasted live over the internet. 
 
-The index-window.html file creates a web demo and body tracking socket instance of your pose data.
-The socket-viewer.html file allows you (or anyone) to view the socket data on any device with internet access. 
+The index.html file creates a web demo and body tracking socket instance of your pose data.
+The normalize-viewer.html file allows you (or anyone) to view the socket data on any device with internet access. 
 
-After all of those steps are complete, the project should be viewable in this format (included is viewing index-sine.html and socket-viewer.html)
+After all of those steps are complete, the project should be viewable in this format.
 
 https://user-images.githubusercontent.com/66575069/142478656-48bea60f-a80e-4e26-8384-46ac8258b0cd.mov
 
